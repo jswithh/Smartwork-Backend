@@ -96,7 +96,7 @@ class CompanyController extends Controller
                 );
 
             if($request->hasFile('logo')){
-                $path = $request->file('logo')->store('public/company_logo');
+                $path = url().'storage/'.$request->file('logo')->store('public/company_logo');
             }
             $company->update([
                 'name' => $request->name,
