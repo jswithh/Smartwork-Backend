@@ -25,11 +25,12 @@ class CompanyController extends Controller
                 $user->where('user_id', Auth::id());
             })->with(['users'])->find($id);
 
-            if ($company)
+            if ($company){
                 return ResponseFormatter::success(
                     $company,
                     'Data company berhasil diambil'
                 );
+            }
            
                 return ResponseFormatter::error(
                     'Data company tidak ada',
