@@ -25,6 +25,7 @@ Route::prefix('company')->middleware('auth:sanctum')->name('company.')->group(fu
     Route::get('', [CompanyController::class, 'fetch'])->name('fetch');
     Route::post('', [CompanyController::class, 'create'])->name('create');
     Route::post('update/{id}', [CompanyController::class, 'update'])->name('update');
+    Route::delete('{id}', [CompanyController::class, 'delete'])->name('delete');
 });
 
 // Team API
