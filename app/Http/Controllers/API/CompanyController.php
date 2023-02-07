@@ -57,7 +57,7 @@ class CompanyController extends Controller
     public function create(CreateCompanyRequest $request){
         try {
             if($request->file('logo')){
-                 $path = url().'storage/'.$request->file('logo')->store('public/company_logo');
+                 $path = url('/').'/storage/'.$request->file('logo')->store('public/company_logo');
             }
             $company = Company::create([
                 'name' => $request->name,
@@ -96,7 +96,7 @@ class CompanyController extends Controller
                 );
 
             if($request->hasFile('logo')){
-                $path = url().'storage/'.$request->file('logo')->store('public/company_logo');
+                $path = url('/').'/storage/'.$request->file('logo')->store('public/company_logo');
             }
             $company->update([
                 'name' => $request->name,
