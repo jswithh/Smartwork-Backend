@@ -23,11 +23,11 @@ class TeamController extends Controller
         if ($id) {
             $team = $teamQuery->find($id);
 
-            if ($team)
+            if ($team){
                 return ResponseFormatter::success(
                     $team,
                     'Data team berhasil diambil'
-                );
+                );}
            
                 return ResponseFormatter::error(
                     'Data team tidak ada',
@@ -51,7 +51,7 @@ class TeamController extends Controller
     public function create(CreateTeamRequest $request){
         try {
             if($request->file('icon')){
-                $path = $request->file('icon')->store('team_icon');
+                $path = $request->file('icon')->store('public/team_icon');
             }
             $team = Team::create([
                 'name' => $request->name,

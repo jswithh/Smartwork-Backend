@@ -25,11 +25,11 @@ class ResponsibilityController extends Controller
             if ($id) {
                 $responsibility = $responsibilityQuery->find($id);
     
-                if ($responsibility)
+                if ($responsibility){
                     return ResponseFormatter::success(
                         $responsibility,
                         'Data responsibility berhasil diambil'
-                    );
+                    );}
                 
                     return ResponseFormatter::error(
                         'Data responsibility tidak ada',
