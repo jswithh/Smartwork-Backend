@@ -89,7 +89,8 @@ class EmployeeController extends Controller
         try {
             // Upload photos
             if ($request->hasFile('photo')) {
-                $path = $request->file('photo')->store('public/photos');
+               $path = url('/').'/storage/photos/' . $request->file('photo')->hashName();
+                 $request->file('photo')->store('public/photos');
             }
 
             // Create employee
@@ -100,7 +101,7 @@ class EmployeeController extends Controller
                 'gender' => $request->gender,
                 'age' => $request->age,
                 'phone' => $request->phone,
-                'photo' => $path,
+                'photo' => isset($path) ? $path : null,
                 'team_id' => $request->team_id,
                 'role_id' => $request->role_id,
             ]);
