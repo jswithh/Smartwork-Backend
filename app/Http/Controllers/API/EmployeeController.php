@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\CreateEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeController extends Controller
 {
@@ -25,7 +26,13 @@ class EmployeeController extends Controller
         $company_id = $request->input('company_id');
         $limit = $request->input('limit', 10);
 
-        $employeeQuery = Employee::query();
+        $employeeQuery = Employee::whereHas('team', function ($query) {
+            $query->whereHas('company', function ($query) {
+                $query->whereHas('users', function ($query) {
+                    $query->where('user_id', Auth::id());
+                });
+            });
+        });
 
         // Get single data
         if ($id) {
