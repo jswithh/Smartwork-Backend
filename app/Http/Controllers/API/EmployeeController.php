@@ -7,7 +7,7 @@ use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\CreateEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 
@@ -161,6 +161,34 @@ class EmployeeController extends Controller
             return ResponseFormatter::success('Employee deleted');
         } catch (Exception $e) {
             return ResponseFormatter::error($e->getMessage(), 500);
+        }
+    }
+    public function login(Request $request)
+    {
+        try {
+            // Validate request
+            $request->validate([
+                'email' => ['required', 'email'],
+                'password' => ['required'],
+            ]);
+
+            // Find user by email
+            $employee = Employee::where('email', $request->email)->firstOrFail();
+            if (!Hash::check($request->password, $employee->password)) {
+                throw new Exception('Invalid password');
+            }
+
+            // Generate token
+            $tokenResult = $employee->createToken('authToken')->plainTextToken;
+
+            // Return response
+            return ResponseFormatter::success([
+                'access_token' => $tokenResult,
+                'token_type' => 'Bearer',
+                'employee' => $employee
+            ], 'Login success');
+        } catch (Exception $e) {
+            return ResponseFormatter::error($e->getMessage());
         }
     }
 }

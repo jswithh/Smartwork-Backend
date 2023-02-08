@@ -91,4 +91,10 @@ class UserController extends Controller
         // Return response
         return ResponseFormatter::success($user, 'Fetch success');
     }
+    
+    public function getAll()
+    {
+        $user = user::get();
+        return ResponseFormatter::success($user, 'Fetch success');
+    }
 }

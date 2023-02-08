@@ -100,10 +100,17 @@ class CompanyController extends Controller
                  $path = url('/').'/storage/company_logo/' . $request->file('logo')->hashName();
                  $request->file('logo')->store('public/company_logo');
             }
-            $company->update([
-                'name' => $request->name,
-                'logo' => $path
-            ]);
+            
+            if (isset($path)) {
+                $company->update([
+                    'name' => $request->name,
+                    'logo' => $path
+                ]);
+            } else {
+                $company->update([
+                    'name' => $request->name,
+                ]);
+            }
 
             return ResponseFormatter::success(
                 $company,

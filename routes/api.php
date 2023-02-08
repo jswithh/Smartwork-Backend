@@ -58,6 +58,7 @@ Route::prefix('employee')->middleware('auth:sanctum')->name('employee.')->group(
     Route::post('update/{id}', [EmployeeController::class, 'update'])->name('update');
     Route::delete('{id}', [EmployeeController::class, 'destroy'])->name('delete');
 });
+    Route::post('employee/login', [EmployeeController::class, 'login'])->name('login');
 
 // Auth API
 Route::name('auth.')->group(function () {
@@ -67,5 +68,6 @@ Route::name('auth.')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('logout', [UserController::class, 'logout'])->name('logout');
         Route::get('user', [UserController::class, 'fetch'])->name('fetch');
+        Route::get('userAll', [UserController::class, 'getAll'])->name('getAll');
     });
 });
