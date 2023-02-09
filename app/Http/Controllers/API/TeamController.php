@@ -52,7 +52,7 @@ class TeamController extends Controller
         try {
             if($request->file('icon')){
                   $path = url('/').'/storage/team_icon/' . $request->file('icon')->hashName();
-                 $request->file('logo')->store('public/team_icon');
+                 $request->file('icon')->store('public/team_icon');
             }
             $team = Team::create([
                 'name' => $request->name,
