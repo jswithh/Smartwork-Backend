@@ -15,6 +15,7 @@ class TeamController extends Controller
     public function fetch(Request $request){
         $id = $request->input('id');
         $name = $request->input('name');
+        $assigned = $request->input('assigned');
         $limit = $request->input('limit', 10);
 
         $teamQuery = Team::query();
@@ -39,8 +40,11 @@ class TeamController extends Controller
 
         // smartwork.id/api/team?name=hracademy
         if ($name){
-
             $team->where('name', 'like', '%' . $name . '%');
+        }
+
+        if($assigned){
+            $team->withCount('employees');
         }
 
         return ResponseFormatter::success(
