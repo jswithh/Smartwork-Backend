@@ -34,7 +34,7 @@ class RoleController extends Controller
         }
 
         // Get multiple data
-        $roles = $roleQuery->where('company_id', $request->company_id);
+        $roles = $roleQuery;
 
         if ($name) {
             $roles->where('name', 'like', '%' . $name . '%');
@@ -60,7 +60,9 @@ class RoleController extends Controller
             // Create role
             $role = Role::create([
                 'name' => $request->name,
-                'company_id' => $request->company_id,
+                'user_id' => $request->user_id,
+                'parent' => $request->parent,
+                'level' => $request->level,
             ]);
 
             if (!$role) {
@@ -88,7 +90,9 @@ class RoleController extends Controller
             // Update role
             $role->update([
                 'name' => $request->name,
-                'company_id' => $request->company_id,
+                'user_id' => $request->user_id,
+                'parent' => $request->parent,
+                'level' => $request->level,
             ]);
 
             return ResponseFormatter::success($role, 'Role updated');

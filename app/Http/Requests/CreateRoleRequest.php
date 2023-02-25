@@ -30,7 +30,21 @@ class CreateRoleRequest extends FormRequest
                 'string',
                 'max:255',
             ],
-        'company_id'=>'required|integer|exists:companies,id', 
+            'user_id'=>[
+                'required',
+                'integer',
+                'exists:users,id'
+            ],
+            'parent'=>[
+                'nullable',
+                'integer',
+                'exists:roles,id'
+            ],
+            'level'=>[
+                'required',
+                'integer',
+            ],
+
 
         ];
     }

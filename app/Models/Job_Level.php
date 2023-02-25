@@ -6,19 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Team extends Model
+class Job_Level extends Model
 {
     use HasFactory, SoftDeletes;
 
+        protected $table = 'job_levels';
+
     protected $fillable = [
         'name',
-        'icon',
-        
     ];
 
-    public function employees(){
-        return $this->hasMany(Employee::class);
+    public function User(){
+        return $this->hasOne(User::class);
     }
-
-    
 }

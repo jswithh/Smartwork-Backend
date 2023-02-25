@@ -31,7 +31,6 @@ class CreateTeamRequest extends FormRequest
                 'max:255',
             ],
         'icon'=>'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'company_id'=>'required|integer|exists:companies,id', 
         ];
     }
 }

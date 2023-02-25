@@ -36,7 +36,7 @@ class TeamController extends Controller
                 );
         }
         // smartwork.id/api/team
-        $team = $teamQuery->where('company_id', $request->company_id);
+        $team = $teamQuery;
 
         // smartwork.id/api/team?name=hracademy
         if ($name){
@@ -61,7 +61,6 @@ class TeamController extends Controller
             $team = Team::create([
                 'name' => $request->name,
                 'icon' => $path,
-                'company_id' => $request->company_id,
             ]);
 
         
@@ -92,7 +91,6 @@ class TeamController extends Controller
             if($team){
                 $team->name = $request->name;
                 $team->icon = $request->icon;
-                $team->company_id = $request->company_id;
                 $team->save();
 
                 return ResponseFormatter::success(

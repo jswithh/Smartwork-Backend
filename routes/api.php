@@ -8,7 +8,13 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\CompanyController;
 use App\Http\Controllers\API\EmployeeController;
 use App\Http\Controllers\API\ResponsibilityController;
-
+use App\Http\Controllers\API\Job_LevelController;
+use App\Http\Controllers\API\Employee_TypeController;
+use App\Http\Controllers\API\SalaryController;
+use App\Http\Controllers\API\EducationController;
+use App\Http\Controllers\API\Career_ExperienceController;
+use App\Http\Controllers\API\ContractController;
+use App\Http\Controllers\API\InsuranceController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -60,6 +66,65 @@ Route::prefix('employee')->middleware('auth:sanctum')->name('employee.')->group(
 });
     Route::post('employee/login', [EmployeeController::class, 'login'])->name('login');
 
+    // Job Level API
+    Route::prefix('job_level')->middleware('auth:sanctum')->name('job_level.')->group(function () {
+        Route::get('', [Job_LevelController::class, 'fetch'])->name('fetch');
+        Route::post('', [Job_LevelController::class, 'create'])->name('create');
+        Route::post('update/{id}', [Job_LevelController::class, 'update'])->name('update');
+        Route::delete('{id}', [Job_LevelController::class, 'delete'])->name('delete');
+    });
+
+    // Employee Type API
+    Route::prefix('employee_type')->middleware('auth:sanctum')->name('employee_type.')->group(function () {
+        Route::get('', [Employee_TypeController::class, 'fetch'])->name('fetch');
+        Route::post('', [Employee_TypeController::class, 'create'])->name('create');
+        Route::post('update/{id}', [Employee_TypeController::class, 'update'])->name('update');
+        Route::delete('{id}', [Employee_TypeController::class, 'delete'])->name('delete');
+    });
+
+    // Salary API
+    Route::prefix('salary')->middleware('auth:sanctum')->name('salary.')->group(function () {
+        Route::get('', [SalaryController::class, 'fetch'])->name('fetch');
+        Route::post('', [SalaryController::class, 'create'])->name('create');
+        Route::post('update/{id}', [SalaryController::class, 'update'])->name('update');
+        Route::delete('{id}', [SalaryController::class, 'delete'])->name('delete');
+    });
+
+    // Education API
+    Route::prefix('education')->middleware('auth:sanctum')->name('education.')->group(function () {
+        Route::get('', [EducationController::class, 'fetch'])->name('fetch');
+        Route::post('', [EducationController::class, 'create'])->name('create');
+        Route::post('update/{id}', [EducationController::class, 'update'])->name('update');
+        Route::delete('{id}', [EducationController::class, 'delete'])->name('delete');
+    });
+
+    // Career Experience API
+
+    Route::prefix('career_experience')->middleware('auth:sanctum')->name('career_experience.')->group(function () {
+        Route::get('', [Career_ExperienceController::class, 'fetch'])->name('fetch');
+        Route::post('', [Career_ExperienceController::class, 'create'])->name('create');
+        Route::post('update/{id}', [Career_ExperienceController::class, 'update'])->name('update');
+        Route::delete('{id}', [Career_ExperienceController::class, 'delete'])->name('delete');
+    });
+
+    // Contract API
+
+    Route::prefix('contract')->middleware('auth:sanctum')->name('contract.')->group(function () {
+        Route::get('', [ContractController::class, 'fetch'])->name('fetch');
+        Route::post('', [ContractController::class, 'create'])->name('create');
+        Route::post('update/{id}', [ContractController::class, 'update'])->name('update');
+        Route::delete('{id}', [ContractController::class, 'delete'])->name('delete');
+    });
+
+    // Insurance API
+
+    Route::prefix('insurance')->middleware('auth:sanctum')->name('insurance.')->group(function () {
+        Route::get('', [InsuranceController::class, 'fetch'])->name('fetch');
+        Route::post('', [InsuranceController::class, 'create'])->name('create');
+        Route::post('update/{id}', [InsuranceController::class, 'update'])->name('update');
+        Route::delete('{id}', [InsuranceController::class, 'delete'])->name('delete');
+    });
+
 // Auth API
 Route::name('auth.')->group(function () {
     Route::post('login', [UserController::class, 'login'])->name('login');
@@ -69,5 +134,7 @@ Route::name('auth.')->group(function () {
         Route::post('logout', [UserController::class, 'logout'])->name('logout');
         Route::get('user', [UserController::class, 'fetch'])->name('fetch');
         Route::get('userAll', [UserController::class, 'getAll'])->name('getAll');
+        Route::post('user/update/{id}', [UserController::class, 'update'])->name('update');
+        Route::delete('user/{id}', [UserController::class, 'delete'])->name('delete');
     });
 });

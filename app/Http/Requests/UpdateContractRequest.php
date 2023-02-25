@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class UpdateCompanyRequest extends FormRequest
+class UpdateContractRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,11 @@ class UpdateCompanyRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'nullable|string|max:255',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'user_id' => 'nullable|integer|exists:users,id',
+            'employee_type_id' => 'nullable|integer|exists:employee_types,id',
+            'contract_status' => 'nullable|boolean',
+            'contract_start_date' => 'nullable|date',
+            'contract_end_date' => 'nullable|date',
         ];
     }
 }

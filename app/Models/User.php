@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
@@ -17,6 +18,7 @@ class User extends Authenticatable
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +29,25 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'hrcode',
+        'gender',
+        'addres',
+        'phone',
+        'birthday',
+        'birthplace',
+        'religion',
+        'nationality',
+        'education',
+        'name_of_school',
+        'number_of_identity',
+        'place_of_identity',
+        'branch',
+        'role_id',
+        'team_id',
+        'job_level',
+        'employee_type',
+        'profile_photo_path',
+        'is_active',
     ];
 
     /**
@@ -59,8 +80,32 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    public function companies()
-    {
-        return $this->belongsToMany(Company::class);
+     public function team(){
+        return $this->belongsTo(Team::class);
     }
+
+    public function role(){
+        return $this->belongsTo(Role::class);
+    }
+
+    public function job_level(){
+        return $this->belongsTo(Job_Level::class);
+    }
+
+    public function salary(){
+        return $this->hasOne(Salary::class);
+    }
+
+    public function employee_type(){
+        return $this->belongsTo(Employee_Type::class);
+    }
+
+    public function contract(){
+        return $this->hasOne(Contract::class);
+    }
+
+    public function insurance(){
+        return $this->hasOne(Insurance::class);
+    }
+    
 }
