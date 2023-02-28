@@ -15,6 +15,10 @@ use App\Http\Controllers\API\EducationController;
 use App\Http\Controllers\API\Career_ExperienceController;
 use App\Http\Controllers\API\ContractController;
 use App\Http\Controllers\API\InsuranceController;
+use App\Http\Controllers\API\AttendanceController;
+use App\Http\Controllers\API\GoalController;
+use App\Http\Controllers\API\Midyear_EvaluationController;
+use App\Http\Controllers\API\Final_EvaluationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -125,6 +129,42 @@ Route::prefix('employee')->middleware('auth:sanctum')->name('employee.')->group(
         Route::delete('{id}', [InsuranceController::class, 'delete'])->name('delete');
     });
 
+    // Attendance API
+
+    Route::prefix('attendance')->middleware('auth:sanctum')->name('attendance.')->group(function () {
+        Route::get('', [AttendanceController::class, 'fetchByUser'])->name('fetchByUser');
+        Route::get('fetchAll', [AttendanceController::class, 'fetchAll'])->name('fetchAll');
+        Route::post('update/{id}', [AttendanceController::class, 'update'])->name('update');
+        Route::delete('{id}', [AttendanceController::class, 'delete'])->name('delete');
+    });
+
+    // Goal API
+
+    Route::prefix('goal')->middleware('auth:sanctum')->name('goal.')->group(function () {
+        Route::get('', [GoalController::class, 'fetch'])->name('fetch');
+        Route::post('', [GoalController::class, 'create'])->name('create');
+        Route::post('update/{id}', [GoalController::class, 'update'])->name('update');
+        Route::delete('{id}', [GoalController::class, 'delete'])->name('delete');
+    });
+
+    // Midyear Evaluation API
+    
+    Route::prefix('midyear_evaluation')->middleware('auth:sanctum')->name('midyear_evaluation.')->group(function () {
+        Route::get('', [Midyear_EvaluationController::class, 'fetch'])->name('fetch');
+        Route::post('', [Midyear_EvaluationController::class, 'create'])->name('create');
+        Route::post('update/{id}', [Midyear_EvaluationController::class, 'update'])->name('update');
+        Route::delete('{id}', [Midyear_EvaluationController::class, 'delete'])->name('delete');
+    });
+
+    // Final Evaluation API
+
+    Route::prefix('final_evaluation')->middleware('auth:sanctum')->name('final_evaluation.')->group(function () {
+        Route::get('', [Final_EvaluationController::class, 'fetch'])->name('fetch');
+        Route::post('', [Final_EvaluationController::class, 'create'])->name('create');
+        Route::post('update/{id}', [Final_EvaluationController::class, 'update'])->name('update');
+        Route::delete('{id}', [Final_EvaluationController::class, 'delete'])->name('delete');
+    });
+    
 // Auth API
 Route::name('auth.')->group(function () {
     Route::post('login', [UserController::class, 'login'])->name('login');

@@ -107,5 +107,17 @@ class User extends Authenticatable
     public function insurance(){
         return $this->hasOne(Insurance::class);
     }
+
+    public function attendance(){
+        return $this->hasMany(Attendance::class);
+    }
+
+    public function user(){
+        return $this->hasMany(User::class);
+    }
+
+    public function goal(){
+        return $this->hasMany(Goal::class);
+    }
     
 }

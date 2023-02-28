@@ -11,22 +11,22 @@ class Attendance extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'employee_id',
-        'clock_in',
-        'clock_out',
+        'user_id',
+        'clock_in_time',
+        'clock_out_time',
         'working_from',
         'late',
-        'clock_out_address',
+        'clock_out_addres',
         'working_hours',
         'break_in',
         'break_out',
         'break_hours',
-        'totally',
-        'overtime',
+        'Totally',
+        'Overtime',
     ];
 
-    public function employee()
-    {
-        return $this->belongsTo(Employee::class);
-    }
+   public function user()
+   {
+       return $this->belongsTo(User::class);
+   }
 }
