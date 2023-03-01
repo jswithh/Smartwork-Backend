@@ -15,6 +15,7 @@ class TaskController extends Controller
     public function create(CreateTaskRequest $request){
 
         $task = Task::create([
+                'project_id' => $request->project_id,
                 'name' => $request->name,
                 'description' => $request->description,
                 'priority' => $request->priority,
@@ -25,6 +26,7 @@ class TaskController extends Controller
                 'status' => $request->status,
                 'created_by' => $request->created_by,
                 'assigned_to' => $request->assigned_to,
+                
         ]);
        
 
@@ -76,14 +78,17 @@ class TaskController extends Controller
 
         if($task){
             $task->update([
-             'user_id' => $request->user_id,
-            'company_name' => $request->company_name,
-            'location' => $request->location,
-            'job_title' => $request->job_title,
-            'employee_type_id' => $request->employee_type_id,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'job_description' => $request->job_description,
+             'project_id' => $request->project_id,
+                'name' => $request->name,
+                'description' => $request->description,
+                'priority' => $request->priority,
+                'date_added' => $request->date_added,
+                'start_date' => $request->start_date,
+                'due_date' => $request->due_date,
+                'date_completed' => $request->date_completed,
+                'status' => $request->status,
+                'created_by' => $request->created_by,
+                'assigned_to' => $request->assigned_to,
             ]
             );
 
