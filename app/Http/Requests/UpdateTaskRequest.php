@@ -33,7 +33,7 @@ class UpdateTaskRequest extends FormRequest
             'start_date' => 'nullable|date',
             'due_date' => 'nullable|date',
             'date_completed' => 'nullable|date',
-            'status' => 'nullable|string',
+            'status' => 'nullable|integer',
             'created_by' => 'nullable|integer',
             'assigned_to' => 'nullable|integer',
         ];

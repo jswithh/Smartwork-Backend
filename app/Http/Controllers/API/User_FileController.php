@@ -14,8 +14,8 @@ class User_FileController extends Controller
     {
         try {
             if($request->file('file_name')){
-                 $path = url('/').'/storage/file_name/' . $request->file('file_name')->hashName();
-                 $request->file('file_name')->store('public/file_name');
+                 $path = url('/').'/storage/user_files/' . $request->file('file_name')->hashName();
+                 $request->file('file_name')->store('public/user_files');
             }
             $user_file = User_File::create([
                 'user_id' => $request->user_id,
@@ -55,8 +55,25 @@ class User_FileController extends Controller
                 }
                 return ResponseFormatter::error(null,'File not found');
             }
+
+            return ResponseFormatter::success($user_files, 'File Found');
+
         } catch (\Throwable $th) {
-            //throw $th;
+            return ResponseFormatter::error($th->getMessage());
+        }
+    }
+
+    public function delete($id){
+        try {
+            $user_file = User_File::find($id);
+
+            if($user_file){
+                $user_file->delete();
+                return ResponseFormatter::success($user_file, 'File Deleted');
+            }
+            return ResponseFormatter::error(null, 'File not found');
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th->getMessage());
         }
     }
 }

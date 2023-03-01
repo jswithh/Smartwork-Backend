@@ -33,7 +33,7 @@ class CreateTaskRequest extends FormRequest
             'start_date' => 'required|date',
             'due_date' => 'required|date',
             'date_completed' => 'nullable|date',
-            'status' => 'required|string',
+            'status' => 'required|integer',
             'created_by' => 'required|integer',
             'assigned_to' => 'required|integer',
         ];

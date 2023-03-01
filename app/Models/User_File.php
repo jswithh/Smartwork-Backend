@@ -10,6 +10,8 @@ class User_File extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'user_files';
+
     protected $fillable = [
         'user_id',
         'file_name',

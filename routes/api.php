@@ -21,6 +21,7 @@ use App\Http\Controllers\API\Midyear_EvaluationController;
 use App\Http\Controllers\API\Final_EvaluationController;
 use App\Http\Controllers\API\TaskController;
 use App\Http\Controllers\API\ProjectController;
+use App\Http\Controllers\API\User_FileController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -183,6 +184,14 @@ Route::prefix('employee')->middleware('auth:sanctum')->name('employee.')->group(
         Route::post('', [ProjectController::class, 'create'])->name('create');
         Route::post('update/{id}', [ProjectController::class, 'update'])->name('update');
         Route::delete('{id}', [ProjectController::class, 'delete'])->name('delete');
+    });
+
+    // User File API
+
+    Route::prefix('user_file')->middleware('auth:sanctum')->name('user_file.')->group(function () {
+        Route::get('', [User_FileController::class, 'fetch'])->name('fetch');
+        Route::post('', [User_FileController::class, 'create'])->name('create');
+        Route::delete('{id}', [User_FileController::class, 'delete'])->name('delete');
     });
     
 // Auth API
