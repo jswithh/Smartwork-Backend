@@ -19,6 +19,8 @@ use App\Http\Controllers\API\AttendanceController;
 use App\Http\Controllers\API\GoalController;
 use App\Http\Controllers\API\Midyear_EvaluationController;
 use App\Http\Controllers\API\Final_EvaluationController;
+use App\Http\Controllers\API\TaskController;
+use App\Http\Controllers\API\ProjectController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -163,6 +165,24 @@ Route::prefix('employee')->middleware('auth:sanctum')->name('employee.')->group(
         Route::post('', [Final_EvaluationController::class, 'create'])->name('create');
         Route::post('update/{id}', [Final_EvaluationController::class, 'update'])->name('update');
         Route::delete('{id}', [Final_EvaluationController::class, 'delete'])->name('delete');
+    });
+
+    // Task API
+
+    Route::prefix('task')->middleware('auth:sanctum')->name('task.')->group(function () {
+        Route::get('', [TaskController::class, 'fetch'])->name('fetch');
+        Route::post('', [TaskController::class, 'create'])->name('create');
+        Route::post('update/{id}', [TaskController::class, 'update'])->name('update');
+        Route::delete('{id}', [TaskController::class, 'delete'])->name('delete');
+    });
+
+    // Project API
+
+    Route::prefix('project')->middleware('auth:sanctum')->name('project.')->group(function () {
+        Route::get('', [ProjectController::class, 'fetch'])->name('fetch');
+        Route::post('', [ProjectController::class, 'create'])->name('create');
+        Route::post('update/{id}', [ProjectController::class, 'update'])->name('update');
+        Route::delete('{id}', [ProjectController::class, 'delete'])->name('delete');
     });
     
 // Auth API

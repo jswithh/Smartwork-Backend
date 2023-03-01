@@ -37,6 +37,8 @@ class User extends Authenticatable
         'birthday',
         'birthplace',
         'religion',
+        'marital_status',
+        'dependent',
         'nationality',
         'education',
         'name_of_school',

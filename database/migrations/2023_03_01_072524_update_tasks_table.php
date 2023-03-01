@@ -13,8 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function(Blueprint $table){
-            $table->string('dependent')->nullable()->after('marital_status');
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->bigInteger('project_id')->after('id');
+            $table->integer('status')->change();
+            $table->integer('created_by')->after('status')->change();
+            $table->integer('assigned_to')->after('created_by')->change();
         });
     }
 

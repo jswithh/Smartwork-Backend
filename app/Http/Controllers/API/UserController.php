@@ -63,6 +63,8 @@ class UserController extends Controller
                 'birthday'=> $request->birthday,
                 'birthplace'=> $request->birthplace,
                 'religion'=> $request->religion,
+                'marital_status',
+                'dependent',
                 'nationality'=> $request->nationality,
                 'education'=> $request->education,
                 'name_of_school'=> $request->name_of_school,
@@ -190,6 +192,7 @@ class UserController extends Controller
                 $users->birthplace = $request->birthplace;
                 $users->religion = $request->religion;
                 $users->marital_status = $request->marital_status;
+                $users->dependent = $request->dependent;
                 $users->nationality = $request->nationality;
                 $users->education = $request->education;
                 $users->name_of_school = $request->name_of_school;

@@ -13,9 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function(Blueprint $table){
-            $table->string('dependent')->nullable()->after('marital_status');
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->bigInteger('created_by')->unsigned()->after('status');
+            $table->bigInteger('assigned_to')->unsigned()->nullable()->after('created_by');
+            $table->softDeletes()->after('status');
         });
+       
     }
 
     /**

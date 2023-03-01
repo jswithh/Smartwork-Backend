@@ -36,6 +36,7 @@ class UpdateUserRequest extends FormRequest
             'birthplace' => 'nullable|string',
             'religion' => 'nullable|string',
             'marital_status'=> 'nullable|string',
+            'dependent' => 'nullable|integer',
             'nationality' => 'nullable|string',
             'education' => 'nullable|string',
             'name_of_school' => 'nullable|string',

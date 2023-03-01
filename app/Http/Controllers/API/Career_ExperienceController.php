@@ -54,7 +54,7 @@ class Career_ExperienceController extends Controller
 
 
         if($user_id){
-           $career_experience = $career_experienceQuery->where('user_id', $user_id)->get()->with('employee_type');
+           $career_experience = $career_experienceQuery->where('user_id', $user_id)->get();
 
             if($career_experience){
                 return ResponseFormatter::success($career_experience, 'Career experience Found');
