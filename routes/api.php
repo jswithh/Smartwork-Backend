@@ -22,6 +22,8 @@ use App\Http\Controllers\API\Final_EvaluationController;
 use App\Http\Controllers\API\TaskController;
 use App\Http\Controllers\API\ProjectController;
 use App\Http\Controllers\API\User_FileController;
+use App\Http\Controllers\API\Education_FileController;
+use App\Http\Controllers\API\Career_FileController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -192,6 +194,22 @@ Route::prefix('employee')->middleware('auth:sanctum')->name('employee.')->group(
         Route::get('', [User_FileController::class, 'fetch'])->name('fetch');
         Route::post('', [User_FileController::class, 'create'])->name('create');
         Route::delete('{id}', [User_FileController::class, 'delete'])->name('delete');
+    });
+
+    // Education File API
+
+    Route::prefix('education_file')->middleware('auth:sanctum')->name('education_file.')->group(function () {
+        Route::get('', [Education_FileController::class, 'fetch'])->name('fetch');
+        Route::post('', [Education_FileController::class, 'create'])->name('create');
+        Route::delete('{id}', [Education_FileController::class, 'delete'])->name('delete');
+    });
+
+    // Career file API
+
+    Route::prefix('career_file')->middleware('auth:sanctum')->name('career_file.')->group(function () {
+        Route::get('', [Career_FileController::class, 'fetch'])->name('fetch');
+        Route::post('', [Career_FileController::class, 'create'])->name('create');
+        Route::delete('{id}', [Career_FileController::class, 'delete'])->name('delete');
     });
     
 // Auth API
