@@ -33,7 +33,7 @@ class CreateEmployeeRequest extends FormRequest
             'phone' => 'required|string|max:255',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'team_id' => 'required|integer|exists:teams,id',
-            'role_id' => 'required|integer|exists:roles,id',
+            'department_id' => 'required|integer|exists:roles,id',
         ];
     }
 }

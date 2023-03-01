@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\RoleController;
+use App\Http\Controllers\API\DepartmentController;
 use App\Http\Controllers\API\TeamController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\CompanyController;
@@ -46,12 +46,12 @@ Route::prefix('team')->middleware('auth:sanctum')->name('team.')->group(function
     Route::delete('{id}', [TeamController::class, 'delete'])->name('delete');
 });
 
-// Role API
-Route::prefix('role')->middleware('auth:sanctum')->name('role.')->group(function () {
-    Route::get('', [RoleController::class, 'fetch'])->name('fetch');
-    Route::post('', [RoleController::class, 'create'])->name('create');
-    Route::post('update/{id}', [RoleController::class, 'update'])->name('update');
-    Route::delete('{id}', [RoleController::class, 'delete'])->name('delete');
+// Department API
+Route::prefix('department')->middleware('auth:sanctum')->name('department.')->group(function () {
+    Route::get('', [DepartmentController::class, 'fetch'])->name('fetch');
+    Route::post('', [DepartmentController::class, 'create'])->name('create');
+    Route::post('update/{id}', [DepartmentController::class, 'update'])->name('update');
+    Route::delete('{id}', [DepartmentController::class, 'delete'])->name('delete');
 });
 
 // Responsilibity API

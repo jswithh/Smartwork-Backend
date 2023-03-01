@@ -28,8 +28,8 @@ return new class extends Migration
             $table->integer('number_of_identity')->after('name_of_school')->nullable();
             $table->string('place_of_identity')->after('number_of_identity')->nullable();
             $table->string('branch')->after('place_of_identity')->nullable();
-            $table->integer('role_id')->after('branch')->nullable();
-            $table->string('team_id')->after('role_id')->nullable();
+            $table->integer('department_id')->after('branch')->nullable();
+            $table->string('team_id')->after('department_id')->nullable();
             $table->string('job_level')->after('team_id')->nullable();
             $table->string('employee_type')->after('job_level')->nullable();
             $table->string('profile_picture')->after('employee_type')->nullable();

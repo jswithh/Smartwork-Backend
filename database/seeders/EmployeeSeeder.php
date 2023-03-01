@@ -23,7 +23,7 @@ class EmployeeSeeder extends Seeder
             'phone' => '086722728888',
             'photo' => 'https://via.placeholder.com/150',
             'team_id' => 1,
-            'role_id' => 1,
+            'department_id' => 1,
             'created_at' => '2021-01-01 00:00:00',
             'updated_at' => '2021-01-01 00:00:00',
         ]);

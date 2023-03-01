@@ -37,7 +37,7 @@ class ResponsibilityController extends Controller
                     );
             }
             // smartwork.id/api/responsibility
-            $responsibility = $responsibilityQuery->where('role_id', $request->role_id);
+            $responsibility = $responsibilityQuery->where('department_id', $request->department_id);
     
             // smartwork.id/api/responsibility?name=hracademy
             if ($name){
@@ -65,7 +65,7 @@ class ResponsibilityController extends Controller
         try {
             $responsibility = Responsibility::create([
                 'name' => $request->name,
-                'role_id' => $request->role_id,
+                'department_id' => $request->department_id,
             ]);
 
         
@@ -95,7 +95,7 @@ class ResponsibilityController extends Controller
             // check responsibility is owned by user 
             if($responsibility){
                 $responsibility->name = $request->name;
-                $responsibility->role_id = $request->role_id;
+                $responsibility->department_id = $request->department_id;
                 $responsibility->save();
 
                 return ResponseFormatter::success(

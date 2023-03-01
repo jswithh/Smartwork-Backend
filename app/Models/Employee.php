@@ -21,7 +21,7 @@ class Employee extends Authenticatable
         'phone',
         'photo',
         'team_id',
-        'role_id',
+        'department_id',
         'is_verified',
         'verification_at',
     ];

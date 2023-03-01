@@ -13,13 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('responsibilities', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->bigInteger('department_id')->unsigned();
-            $table->softDeletes();
-            $table->timestamps();
-        });
+        
     }
 
     /**
@@ -29,6 +23,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('responsibilities');
+        //
     }
 };

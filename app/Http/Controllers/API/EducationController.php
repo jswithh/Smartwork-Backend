@@ -54,7 +54,7 @@ class EducationController extends Controller
 
 
         if($user_id){
-           $education = $educationQuery->where('user_id', $user_id)->first();
+           $education = $educationQuery->where('user_id', $user_id)->get();
 
             if($education){
                 return ResponseFormatter::success($education, 'Education Found');

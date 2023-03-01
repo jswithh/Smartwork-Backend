@@ -6,6 +6,8 @@ use App\Helpers\ResponseFormatter;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Rules\Password;
@@ -41,37 +43,9 @@ class UserController extends Controller
         }
     }
 
-    public function register(Request $request)
+    public function register(CreateUserRequest $request)
     {
         try {
-            // Validate request
-            $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => ['required', 'string', new Password],
-                'hrcode' => ['nullable', 'string', 'unique:users' ],
-                'gender' => 'nullable|string|in:MALE,FEMALE',
-                'addres' => ['nullable', 'string' ],
-                'phone' => ['nullable', 'string' ],
-                'birthday' => ['nullable', 'dateTime' ],
-                'birthplace' => ['nullable', 'string' ],
-                'religion' => ['nullable', 'string' ],
-                'nationality' => ['nullable', 'string' ],
-                'education' => ['nullable', 'string' ],
-                'name_of_school' => ['nullable', 'string' ],
-                'number_of_identity' => ['nullable', 'integer' ],
-                'place_of_identity' => ['nullable', 'string' ],
-                'branch' => ['nullable', 'string' ],
-                'role_id' => ['required', 'integer' ],
-                'team_id' => ['required', 'string' ],
-                'job_level' => ['nullable', 'string' ],
-                'employee_type' => ['nullable', 'string' ],
-                'profile_photo_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'is_active' => ['nullable', 'boolean' ],
-
-
-            ]);
-
             if($request->file('profile_photo_path')){
                  $path = url('/').'/storage/profile_photo_path/' . $request->file('profile_photo_path')->hashName();
                  $request->file('profile_photo_path')->store('public/profile_photo_path');
@@ -95,7 +69,7 @@ class UserController extends Controller
                 'number_of_identity'=> $request->number_of_identity,
                 'place_of_identity'=> $request->place_of_identity,
                 'branch'=> $request->branch,
-                'role_id'=> $request->role_id,
+                'department_id'=> $request->department_id,
                 'team_id'=> $request->team_id,
                 'job_level'=> $request->job_level,
                 'employee_type'=> $request->employee_type,
@@ -140,15 +114,15 @@ class UserController extends Controller
     {
         $id = $request->input('id');
         $name = $request->input('name');
-        $role_id = $request->input('role_id');
+        $department_id = $request->input('department_id');
         $team_id = $request->input('team_id');
         $limit = $request->input('limit', 10);
         $user = User::query();
 
-        $userQuery = $user->where('is_active', 1)->with(['role', 'team'])->paginate($limit);
+        $userQuery = $user->where('is_active', 1)->with(['department', 'team'])->paginate($limit);
 
         if ($id){
-            $userQuery = User::where('id', $id)->with(['role', 'team'])->first();
+            $userQuery = User::where('id', $id)->with(['department', 'team'])->first();
 
             if ($userQuery){
 
@@ -159,7 +133,7 @@ class UserController extends Controller
         }
 
         if($name){
-            $userQuery = User::where('name', 'like', '%'.$name.'%')->with(['role', 'team'])->get();
+            $userQuery = User::where('name', 'like', '%'.$name.'%')->with(['department', 'team'])->get();
 
             if($userQuery){
                 return ResponseFormatter::success($userQuery, 'Data user berhasil diambil');
@@ -168,15 +142,15 @@ class UserController extends Controller
         }
 
         if($team_id){
-            $userQuery = User::where('team_id', $team_id)->with(['role', 'team'])->get();
+            $userQuery = User::where('team_id', $team_id)->with(['department', 'team'])->get();
             if($userQuery){
                 return ResponseFormatter::success($userQuery, 'Data user berhasil diambil');
             }
             return ResponseFormatter::error('Employee not found', 404);
         }
 
-        if($role_id){
-            $userQuery = User::where('role_id', $role_id)->with(['role', 'team'])->get();
+        if($department_id){
+            $userQuery = User::where('department_id', $department_id)->with(['department', 'team'])->get();
             if($userQuery){
                 return ResponseFormatter::success($userQuery, 'Data user berhasil diambil');
             }
@@ -200,4 +174,56 @@ class UserController extends Controller
         return ResponseFormatter::error('User not found', 404);
        
     }
+
+    public function update(UpdateUserRequest $request, $id){
+        try {
+            $users = User::find($id);
+            
+            if($users){
+                $users->name = $request->name;
+                $users->email = $request->email;
+                $users->hrcode = $request->hrcode;
+                $users->gender = $request->gender;
+                $users->addres = $request->addres;
+                $users->phone = $request->phone;
+                $users->birthday = $request->birthday;
+                $users->birthplace = $request->birthplace;
+                $users->religion = $request->religion;
+                $users->marital_status = $request->marital_status;
+                $users->nationality = $request->nationality;
+                $users->education = $request->education;
+                $users->name_of_school = $request->name_of_school;
+                $users->number_of_identity = $request->number_of_identity;
+                $users->place_of_identity = $request->place_of_identity;
+                $users->branch = $request->branch;
+                $users->department_id = $request->department_id;
+                $users->team_id = $request->team_id;
+                $users->job_level = $request->job_level;
+                $users->employee_type = $request->employee_type;
+                $users->is_active = $request->is_active;
+                $users->password = Hash::make($request->password);
+                $users->save();
+        
+            }
+
+            return ResponseFormatter::success($users, 'User berhasil diupdate');
+
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th->getMessage(), 500);
+        }
+    }
+
+    public function delete($id){
+        $users = User::find($id);
+
+        if($users){
+            $users->delete();
+            return ResponseFormatter::success($users, 'User berhasil dihapus');
+        }
+
+        return ResponseFormatter::error('User not found', 404);
+
+    }
+
+ 
 }

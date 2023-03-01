@@ -10,6 +10,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
@@ -42,7 +43,7 @@ class User extends Authenticatable
         'number_of_identity',
         'place_of_identity',
         'branch',
-        'role_id',
+        'department_id',
         'team_id',
         'job_level',
         'employee_type',
@@ -61,6 +62,8 @@ class User extends Authenticatable
         'two_factor_recovery_codes',
         'two_factor_secret',
     ];
+
+    
 
     /**
      * The attributes that should be cast.
@@ -84,8 +87,8 @@ class User extends Authenticatable
         return $this->belongsTo(Team::class);
     }
 
-    public function role(){
-        return $this->belongsTo(Role::class);
+   public function department(){
+        return $this->belongsTo(Department::class);
     }
 
     public function job_level(){
@@ -119,5 +122,6 @@ class User extends Authenticatable
     public function goal(){
         return $this->hasMany(Goal::class);
     }
+  
     
 }

@@ -26,7 +26,7 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => 'nullable|string|max:255',
-            'email' => 'nullable|string|email|max:255|unique:users,email,' . $this->user->id,
+            'email' => 'nullable|string|email|max:255|unique:users,email,',
             'password' => 'nullable|string|confirmed',
             'hrcode' => 'nullable|string',
             'gender' => 'nullable|string|in:MALE,FEMALE',
@@ -42,7 +42,7 @@ class UpdateUserRequest extends FormRequest
             'number_of_identity' => 'nullable|integer',
             'place_of_identity' => 'nullable|string',
             'branch' => 'nullable|string',
-            'role_id' => 'nullable|integer|exists:roles,id',
+            'department_id' => 'nullable|integer|exists:roles,id',
             'team_id' => 'nullable|integer|exists:teams,id',
             'job_level' => 'nullable|string',
             'employee_type' => 'nullable|string',

@@ -26,7 +26,7 @@ class CreateResponsibilityRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'role_id' => 'required|integer|exists:roles,id',
+            'department_id' => 'required|integer|exists:roles,id',
 
         ];
     }

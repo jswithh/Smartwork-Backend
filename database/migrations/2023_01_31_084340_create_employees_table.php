@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('age');
             $table->string('phone')->unique();
             $table->string('photo')->nullable();
-            $table->bigInteger('role_id')->unsigned();
+            $table->bigInteger('department_id')->unsigned();
             $table->bigInteger('team_id')->unsigned();
             $table->boolean('is_verified')->default(false);
             $table->timestamp('verified_at')->nullable();

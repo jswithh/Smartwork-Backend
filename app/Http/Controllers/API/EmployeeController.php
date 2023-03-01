@@ -22,7 +22,7 @@ class EmployeeController extends Controller
         $age = $request->input('age');
         $phone = $request->input('phone');
         $team_id = $request->input('team_id');
-        $role_id = $request->input('role_id');
+        $department_id = $request->input('department_id');
         $company_id = $request->input('company_id');
         $limit = $request->input('limit', 10);
 
@@ -64,8 +64,8 @@ class EmployeeController extends Controller
             $employees->where('phone', 'like', '%' . $phone . '%');
         }
 
-        if ($role_id) {
-            $employees->where('role_id', $role_id);
+        if ($department_id) {
+            $employees->where('department_id', $department_id);
         }
 
         if ($team_id) {
@@ -103,7 +103,7 @@ class EmployeeController extends Controller
                 'phone' => $request->phone,
                 'photo' => isset($path) ? $path : null,
                 'team_id' => $request->team_id,
-                'role_id' => $request->role_id,
+                'department_id' => $request->department_id,
             ]);
 
             if (!$employee) {
@@ -142,7 +142,7 @@ class EmployeeController extends Controller
                 'phone' => $request->phone,
                 'photo' => isset($path) ? $path : $employee->photo,
                 'team_id' => $request->team_id,
-                'role_id' => $request->role_id,
+                'department_id' => $request->department_id,
             ]);
 
             return ResponseFormatter::success($employee, 'Employee updated');

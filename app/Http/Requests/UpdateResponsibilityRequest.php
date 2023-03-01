@@ -26,7 +26,7 @@ class UpdateResponsibilityRequest extends FormRequest
     {
         return [
             'name' => 'nullable|string|max:255',
-            'role_id' => 'nullable|integer|exists:roles,id',
+            'department_id' => 'nullable|integer|exists:roles,id',
 
         ];
     }

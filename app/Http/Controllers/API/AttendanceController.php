@@ -27,7 +27,7 @@ class AttendanceController extends Controller
         $user_id = $request->input('user_id');
         $month = $request->input('month');
         $year = $request->input('year');
-        $role_id = $request->input('role_id');
+        $department_id = $request->input('department_id');
         $limit = $request->input('limit', 10);
 
         $attendance = Attendance::query();
@@ -48,9 +48,9 @@ class AttendanceController extends Controller
             $attendance->whereYear('created_at', $year);
         }
 
-        if($role_id){
-            $attendance->whereHas('user', function($user) use ($role_id){
-                $user->where('role_id', $role_id);
+        if($department_id){
+            $attendance->whereHas('user', function($user) use ($department_id){
+                $user->where('department_id', $department_id);
             });
         }
         
