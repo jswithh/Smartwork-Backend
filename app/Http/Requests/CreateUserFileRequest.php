@@ -26,7 +26,7 @@ class CreateUserFileRequest extends FormRequest
     {
         return [
             'user_id' => 'required|integer|exists:users,id',
-            'file_name' => 'required|string',
+            'file_name' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'size' => 'required|string',
             'type' => 'required|string',
         ];

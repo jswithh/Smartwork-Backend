@@ -13,9 +13,9 @@ class User_FileController extends Controller
     public function create(CreateUserFileRequest $request)
     {
         try {
-            if($request->file('file_name')){
-                 $path = url('/').'/storage/user_files/' . $request->file('file_name')->hashName();
-                 $request->file('file_name')->store('public/user_files');
+             if ($request->hasFile('file_name')) {
+                $path = url('/').'/storage/user_file/' . $request->file('file_name')->hashName();
+                $request->file('file_name')->store('public/user_file');
             }
             $user_file = User_File::create([
                 'user_id' => $request->user_id,
