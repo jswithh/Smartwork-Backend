@@ -12,8 +12,10 @@ class Project extends Model
 
     protected $fillable = [
         'created_by',
+        'assigned_to',
         'name',
         'description',
+        'tags',
         'start_date',
         'due_date',
         'date_completed',
