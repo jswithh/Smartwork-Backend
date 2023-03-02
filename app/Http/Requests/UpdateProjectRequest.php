@@ -26,8 +26,10 @@ class UpdateProjectRequest extends FormRequest
     {
         return [
             'created_by' => 'nullable|integer',
+            'assigned_to' => 'nullable|integer',
             'name' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:255',
+            'tags' => 'nullable|string|max:255',
             'start_date' => 'nullable|date',
             'due_date' => 'nullable|date',
             'status' => 'nullable|integer',

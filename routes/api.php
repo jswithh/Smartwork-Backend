@@ -24,6 +24,7 @@ use App\Http\Controllers\API\ProjectController;
 use App\Http\Controllers\API\User_FileController;
 use App\Http\Controllers\API\Education_FileController;
 use App\Http\Controllers\API\Career_FileController;
+use App\Http\Controllers\API\LeaveController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -210,6 +211,15 @@ Route::prefix('employee')->middleware('auth:sanctum')->name('employee.')->group(
         Route::get('', [Career_FileController::class, 'fetch'])->name('fetch');
         Route::post('', [Career_FileController::class, 'create'])->name('create');
         Route::delete('{id}', [Career_FileController::class, 'delete'])->name('delete');
+    });
+
+    // Leave API
+
+    Route::prefix('leave')->middleware('auth:sanctum')->name('leave.')->group(function () {
+        Route::get('', [LeaveController::class, 'fetch'])->name('fetch');
+        Route::post('', [LeaveController::class, 'create'])->name('create');
+        Route::post('update/{id}', [LeaveController::class, 'update'])->name('update');
+        Route::delete('{id}', [LeaveController::class, 'delete'])->name('delete');
     });
     
 // Auth API

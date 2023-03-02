@@ -25,9 +25,11 @@ class CreateProjectRequest extends FormRequest
     public function rules()
     {
         return [
-            'created_by' => 'required|integer',
+            'created_by' => 'required|integer|exists:users,id',
+            'assigned_to' => 'nullable|integer|exists:users,id',
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
+            'tags' => 'nullable|string|max:255',
             'start_date' => 'required|date',
             'due_date' => 'required|date',
             'status' => 'required|integer',

@@ -16,8 +16,10 @@ class ProjectController extends Controller
 
         $project = Project::create([
                 'created_by' => $request->created_by,
+                'assigned_to' => $request->assigned_to,
                 'name' => $request->name,
                 'description' => $request->description,
+                'tags' => $request->tags,
                 'date_added' => $request->date_added,
                 'start_date' => $request->start_date,
                 'due_date' => $request->due_date,
@@ -75,8 +77,10 @@ class ProjectController extends Controller
         if($project){
             $project->update([
                 'created_by' => $request->created_by,
+                'assigned_to' => $request->assigned_to,
                 'name' => $request->name,
                 'description' => $request->description,
+                'tags' => $request->tags,
                 'date_added' => $request->date_added,
                 'start_date' => $request->start_date,
                 'due_date' => $request->due_date,
