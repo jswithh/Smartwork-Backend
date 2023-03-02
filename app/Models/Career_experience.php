@@ -27,4 +27,9 @@ class Career_experience extends Model
     {
         return $this->belongsTo(Employee_type::class);
     }
+
+    public function career_file()
+    {
+        return $this->hasMany(Career_File::class);
+    }
 }

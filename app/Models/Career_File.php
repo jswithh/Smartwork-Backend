@@ -13,7 +13,7 @@ class Career_File extends Model
     protected $table = 'career_files';
 
     protected $fillable = [
-        'career_id',
+        'career_experience_id',
         'file_name',
         'size',
         'type',

@@ -31,6 +31,7 @@ class UpdateProjectRequest extends FormRequest
             'start_date' => 'nullable|date',
             'due_date' => 'nullable|date',
             'status' => 'nullable|integer',
+            'priority' => 'nullable|string|max:255',
         ];
     }
 }

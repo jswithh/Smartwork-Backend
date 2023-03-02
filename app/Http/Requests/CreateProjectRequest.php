@@ -31,6 +31,7 @@ class CreateProjectRequest extends FormRequest
             'start_date' => 'required|date',
             'due_date' => 'required|date',
             'status' => 'required|integer',
+            'priority' => 'required|string|max:255',
         ];
     }
 }

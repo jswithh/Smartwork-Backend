@@ -39,7 +39,7 @@ class Career_ExperienceController extends Controller
         $limit = $request->input('limit', 10);
 
         // get multiple data
-        $career_experienceQuery = Career_experience::query()->with('employee_type');
+        $career_experienceQuery = Career_experience::query()->with(['employee_type', 'career_file']);
 
         // get single data
 

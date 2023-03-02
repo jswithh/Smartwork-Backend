@@ -39,7 +39,7 @@ class EducationController extends Controller
         $limit = $request->input('limit', 10);
 
         // get multiple data
-        $educationQuery = Education::query();
+        $educationQuery = Education::query()->with('education_file');
 
         // get single data
 

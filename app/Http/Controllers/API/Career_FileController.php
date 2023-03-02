@@ -18,7 +18,7 @@ class Career_FileController extends Controller
                 $request->file('file_name')->store('public/career_file');
             }
             $career_file = Career_File::create([
-                'career_id' => $request->career_id,
+                'career_experience_id' => $request->career_experience_id,
                 'file_name' => $path,
                 'size' => $request->size,
                 'type' => $request->type,
@@ -34,7 +34,7 @@ class Career_FileController extends Controller
 
         try {
             $id = $request->id;
-            $career_id = $request->career_id;
+            $career_experience_id = $request->career_experience_id;
             
             $career_files = Career_File::query();
 
@@ -47,8 +47,8 @@ class Career_FileController extends Controller
                 return ResponseFormatter::error(null,'File not found');
             }
 
-            if($career_id){
-                $files = $career_files->where('career_id', $career_id)->get();
+            if($career_experience_id){
+                $files = $career_files->where('career_experience_id', $career_experience_id)->get();
 
                 if($files){
                     return ResponseFormatter::success($files, 'File Found');

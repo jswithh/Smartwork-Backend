@@ -25,7 +25,7 @@ class UpdateCareerFileRequest extends FormRequest
     public function rules()
     {
         return [
-            'career_id' => 'nullable|integer|exists:career_experience,id',
+            'career_experience_id' => 'nullable|integer|exists:career_experience,id',
             'file_name' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'size' => 'nullable|string',
             'type' => 'nullable|string',

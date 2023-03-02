@@ -29,5 +29,10 @@ class Education extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function Education_file()
+    {
+        return $this->hasMany(Education_File::class);
+    }
+
     
 }

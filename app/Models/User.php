@@ -124,6 +124,10 @@ class User extends Authenticatable
     public function goal(){
         return $this->hasMany(Goal::class);
     }
+
+    public function User_File(){
+        return $this->hasMany(User_File::class);
+    }
   
     
 }

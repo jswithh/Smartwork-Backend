@@ -13,14 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('career_files', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('career_experience_id')->unsigned();
-            $table->string('file_name');
-            $table->string('size');
-            $table->string('type');
-            $table->softDeletes();
-            $table->timestamps();
+        Schema::table('projects', function(Blueprint $table){
+            $table->string('priority')->after('status');
         });
     }
 
@@ -31,6 +25,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('career_files');
+        //
     }
 };

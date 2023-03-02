@@ -25,7 +25,7 @@ class CreateCareerFileRequest extends FormRequest
     public function rules()
     {
         return [
-            'career_id' => 'required|integer|exists:career_experiences,id',
+            'career_experience_id' => 'required|integer|exists:career_experiences,id',
             'file_name' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'size' => 'required|string',
             'type' => 'required|string',

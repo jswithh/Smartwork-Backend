@@ -120,10 +120,10 @@ class UserController extends Controller
         $limit = $request->input('limit', 10);
         $user = User::query();
 
-        $userQuery = $user->where('is_active', 1)->with(['department', 'team'])->paginate($limit);
+        $userQuery = $user->where('is_active', 1)->with(['department', 'team', 'user_file'])->paginate($limit);
 
         if ($id){
-            $userQuery = User::where('id', $id)->with(['department', 'team'])->first();
+            $userQuery = User::where('id', $id)->with(['department', 'team', 'user_file'])->first();
 
             if ($userQuery){
 
@@ -134,7 +134,7 @@ class UserController extends Controller
         }
 
         if($name){
-            $userQuery = User::where('name', 'like', '%'.$name.'%')->with(['department', 'team'])->get();
+            $userQuery = User::where('name', 'like', '%'.$name.'%')->with(['department', 'team', 'user_file'])->get();
 
             if($userQuery){
                 return ResponseFormatter::success($userQuery, 'Data user berhasil diambil');
@@ -143,7 +143,7 @@ class UserController extends Controller
         }
 
         if($team_id){
-            $userQuery = User::where('team_id', $team_id)->with(['department', 'team'])->get();
+            $userQuery = User::where('team_id', $team_id)->with(['department', 'team', 'user_file'])->get();
             if($userQuery){
                 return ResponseFormatter::success($userQuery, 'Data user berhasil diambil');
             }
@@ -151,7 +151,7 @@ class UserController extends Controller
         }
 
         if($department_id){
-            $userQuery = User::where('department_id', $department_id)->with(['department', 'team'])->get();
+            $userQuery = User::where('department_id', $department_id)->with(['department', 'team', 'user_file'])->get();
             if($userQuery){
                 return ResponseFormatter::success($userQuery, 'Data user berhasil diambil');
             }
