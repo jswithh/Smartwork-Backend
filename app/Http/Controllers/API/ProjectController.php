@@ -23,6 +23,7 @@ class ProjectController extends Controller
                 'date_added' => $request->date_added,
                 'start_date' => $request->start_date,
                 'due_date' => $request->due_date,
+                'date_completed' => $request->date_completed,
                 'status' => $request->status,
                 'priority' => $request->priority,
         ]);
@@ -84,6 +85,7 @@ class ProjectController extends Controller
                 'date_added' => $request->date_added,
                 'start_date' => $request->start_date,
                 'due_date' => $request->due_date,
+                'date_completed' => $request->date_completed,
                 'status' => $request->status,
                 'priority' => $request->priority,
             ]

@@ -32,6 +32,7 @@ class UpdateProjectRequest extends FormRequest
             'tags' => 'nullable|string|max:255',
             'start_date' => 'nullable|date',
             'due_date' => 'nullable|date',
+            'date_completed' => 'nullable|date',
             'status' => 'nullable|integer',
             'priority' => 'nullable|string|max:255',
         ];
