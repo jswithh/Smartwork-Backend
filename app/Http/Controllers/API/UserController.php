@@ -10,6 +10,9 @@ use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
+
+
 
 class UserController extends Controller
 {
@@ -113,6 +116,7 @@ class UserController extends Controller
     
     public function getAll(Request $request)
     {
+        
         $id = $request->input('id');
         $name = $request->input('name');
         $department_id = $request->input('department_id');
@@ -225,6 +229,29 @@ class UserController extends Controller
 
         return ResponseFormatter::error('User not found', 404);
 
+    }
+
+    public function assignRole(Request $request, $id){
+
+          if (!$request->user()->hasRole('admin')) {
+            return ResponseFormatter::error('Anda tidak memiliki hak akses', 403);
+    }
+        $user = User::find($id);
+        $user->assignRole($request->role);
+        $permission = explode(',', $request->input('permission'));
+        $user->givePermissionTo($permission);
+        return ResponseFormatter::success($user, 'Role berhasil diassign');
+    }
+
+    public function updateUserRole(Request $request, $id){
+         if (!$request->user()->hasRole('admin')) {
+            return ResponseFormatter::error('Anda tidak memiliki hak akses', 403);
+            }
+        $users = User::find($id);
+        $users->syncRoles($request->role);
+        $permission = explode(',', $request->input('permission'));
+        $users->syncPermissions($permission);
+        return ResponseFormatter::success($users, 'Role berhasil diupdate');
     }
 
  
