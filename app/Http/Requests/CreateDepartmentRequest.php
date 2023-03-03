@@ -30,11 +30,6 @@ class CreateDepartmentRequest extends FormRequest
                 'string',
                 'max:255',
             ],
-            'user_id'=>[
-                'required',
-                'integer',
-                'exists:users,id'
-            ],
             'parent'=>[
                 'nullable',
                 'integer',

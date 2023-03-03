@@ -26,7 +26,6 @@ class UpdateDepartmentRequest extends FormRequest
     {
         return [
             'name' => 'nullable|string|max:255',
-            'user_id' => 'nullable|integer|exists:users,id',
             'parent' => 'nullable|integer',
             'level' => 'nullable|integer',
         ];

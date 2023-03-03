@@ -45,7 +45,7 @@ class DepartmentController extends Controller
         }
         
         if($assigned){
-            $departments->withCount('employees');
+            $departments->withCount('users');
         }
 
         return ResponseFormatter::success(
@@ -60,7 +60,6 @@ class DepartmentController extends Controller
             // Create department
             $department = Department::create([
                 'name' => $request->name,
-                'user_id' => $request->user_id,
                 'parent' => $request->parent,
                 'level' => $request->level,
             ]);
@@ -90,7 +89,6 @@ class DepartmentController extends Controller
             // Update department
             $department->update([
                 'name' => $request->name,
-                'user_id' => $request->user_id,
                 'parent' => $request->parent,
                 'level' => $request->level,
             ]);
