@@ -42,7 +42,7 @@ class ProjectController extends Controller
         $limit = $request->input('limit', 10);
 
         // get multiple data
-        $projectQuery = Project::query();
+        $projectQuery = Project::query()->with('tasks');
 
         // get single data
 
