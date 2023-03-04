@@ -129,6 +129,18 @@ class User extends Authenticatable
     public function User_File(){
         return $this->hasMany(User_File::class);
     }
-  
+
+    public function education(){
+        return $this->hasMany(Education::class);
+    }
+
+    public function education_file(){
+        return $this->hasMany(Education_File::class);
+    }
+
+    public function career_experience(){
+        return $this->hasMany(Career_Experience::class);
+    }
+
     
 }

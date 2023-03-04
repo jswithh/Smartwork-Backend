@@ -107,8 +107,18 @@ class UserController extends Controller
 
     public function fetch(Request $request)
     {
-        // Get user
-        $user = $request->user();
+        // Get user is login
+        $user = User::with([
+    'department', 
+    'team', 
+    'User_File', 
+    'salary', 
+    'education.Education_file',
+    'career_experience.career_file',
+    'contract',
+    'insurance',
+])->findOrFail($request->user()->id);
+
 
         // Return response
         return ResponseFormatter::success($user, 'Fetch success');
