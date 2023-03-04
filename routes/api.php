@@ -141,6 +141,9 @@ Route::middleware("role:admin|manager|staff")->group(function () {
         ->middleware("auth:sanctum")
         ->name("education.")
         ->group(function () {
+            Route::get("", [EducationController::class, "fetch"])->name(
+                "fetch"
+            );
             Route::post("", [EducationController::class, "create"])->name(
                 "create"
             );
@@ -175,6 +178,10 @@ Route::middleware("role:admin|manager|staff")->group(function () {
         ->middleware("auth:sanctum")
         ->name("career_experience.")
         ->group(function () {
+            Route::get("", [
+                Career_ExperienceController::class,
+                "fetch",
+            ])->name("fetch");
             Route::post("", [
                 Career_ExperienceController::class,
                 "create",
