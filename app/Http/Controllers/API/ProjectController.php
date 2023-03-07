@@ -8,25 +8,13 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Requests\CreateProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Http\Request;
-
+use Vinkla\Hashids\Facades\Hashids;
 
 class ProjectController extends Controller
 {
     public function create(CreateProjectRequest $request){
 
-        $project = Project::create([
-                'created_by' => $request->created_by,
-                'assigned_to' => $request->assigned_to,
-                'name' => $request->name,
-                'description' => $request->description,
-                'tags' => $request->tags,
-                'date_added' => $request->date_added,
-                'start_date' => $request->start_date,
-                'due_date' => $request->due_date,
-                'date_completed' => $request->date_completed,
-                'status' => $request->status,
-                'priority' => $request->priority,
-        ]);
+        $project = Project::create($request->all());
        
 
         if($project){
@@ -38,66 +26,59 @@ class ProjectController extends Controller
 
     public function fetch(Request $request){
         $id = $request->input('id');
-        $user_id = $request->input('user_id');
+        $created_by = $request->input('created_by');
         $limit = $request->input('limit', 10);
 
         // get multiple data
         $projectQuery = Project::query()->with('tasks');
 
         // get single data
+        if($request->has('id')){
+            $id = Hashids::decode($id);
+            $project = $projectQuery->where('id', $id)->get();
 
-        if($id){
-            $project = $projectQuery->find($id);
-
-            if($project){
+            if($project->isNotEmpty()){
                 return ResponseFormatter::success($project, 'Project Found');
             }
-            return ResponseFormatter::error(null, 'Project Not Found');
+            return ResponseFormatter::error('Project Not Found',404);
         }
 
 
-        if($user_id){
-           $project = $projectQuery->where('created_by', $user_id)->get();
+        if($request->has('created_by')){
+            $created_by = Hashids::decode($created_by);
+            $project = $projectQuery->where('created_by', $created_by)->get();
 
-            if($project){
+            if($project->isNotEmpty()){
                 return ResponseFormatter::success($project, 'Project Found');
             }
-            return ResponseFormatter::error(null, 'Project Not Found');
-        };
+            return ResponseFormatter::error('Project Not Found',404);
+        }
 
-        return ResponseFormatter::success($projectQuery->paginate($limit), 'Project Found');
-
+        $project = $projectQuery->paginate($limit); 
+        if($project->isNotEmpty()){
+            return ResponseFormatter::success($project, 'Project Found');
+        }
+        return ResponseFormatter::error('Project Not Found',404);
         
     }
 
     public function update(UpdateProjectRequest $request, $id){
        
-
+        $id = Hashids::decode($id)[0];
         $project = Project::find($id);
 
         if($project){
-            $project->update([
-                'created_by' => $request->created_by,
-                'assigned_to' => $request->assigned_to,
-                'name' => $request->name,
-                'description' => $request->description,
-                'tags' => $request->tags,
-                'date_added' => $request->date_added,
-                'start_date' => $request->start_date,
-                'due_date' => $request->due_date,
-                'date_completed' => $request->date_completed,
-                'status' => $request->status,
-                'priority' => $request->priority,
-            ]
+            $project->update($request->all()
             );
 
             return ResponseFormatter::success($project, 'Project Updated');
         }
 
-        return ResponseFormatter::error(null, 'Project Failed to Update');
+        return ResponseFormatter::error('Project Failed to Update',404);
     }
 
     public function delete($id){
+        $id = Hashids::decode($id)[0];
         $project = Project::find($id);
 
         if($project){
@@ -106,6 +87,6 @@ class ProjectController extends Controller
             return ResponseFormatter::success($project, 'Project Deleted');
         }
 
-        return ResponseFormatter::error(null, 'Project Failed to Delete');
+        return ResponseFormatter::error('Project Failed to Delete',404);
     }
 }

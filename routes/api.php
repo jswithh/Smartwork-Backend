@@ -34,459 +34,349 @@ use App\Http\Controllers\API\RoleController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post("login", [UserController::class, "login"])->name("login");
-Route::middleware("role:admin|manager|staff")->group(function () {
-    // Auth API
-    Route::name("auth.")->group(function () {
-        Route::middleware("auth:sanctum")->group(function () {
-            Route::post("logout", [UserController::class, "logout"])->name(
-                "logout"
-            );
-            Route::get("user", [UserController::class, "fetch"])->name("fetch");
-            Route::post("user/update/{id}", [
-                UserController::class,
-                "update",
-            ])->name("update");
-        });
+
+// User Routes
+
+Route::prefix('users')->group(function () {
+    Route::post('login', [UserController::class, 'login']);
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:create user')->post('register', [UserController::class, 'register']);
+        Route::post('logout', [UserController::class, 'logout']);
+        Route::middleware('permission:read user')->get('getAll', [UserController::class, 'getAll']);
+        Route::post('update/{id}', [UserController::class, 'update']);
+        Route::middleware('permission:delete user')->delete('delete/{id}', [UserController::class, 'delete']);
+        Route::get('fetch', [UserController::class, 'fetch']);
+        Route::middleware('role:admin')->post('assignRole/{id}', [UserController::class, 'assignRole']);
+        Route::middleware('role:admin')->post('updateUserRole/{id}', [UserController::class, 'updateUserRole']);
     });
-
-    // User File API
-    Route::prefix("user_file")
-        ->middleware("auth:sanctum")
-        ->name("user_file.")
-        ->group(function () {
-            Route::get("", [User_FileController::class, "fetch"])->name(
-                "fetch"
-            );
-            Route::post("", [User_FileController::class, "create"])->name(
-                "create"
-            );
-            Route::delete("{id}", [User_FileController::class, "delete"])->name(
-                "delete"
-            );
-        });
-
-    // Attendance API
-    Route::prefix("attendance")
-        ->middleware("auth:sanctum")
-        ->name("attendance.")
-        ->group(function () {
-            Route::get("", [AttendanceController::class, "fetchByUser"])->name(
-                "fetchByUser"
-            );
-        });
-
-    // Goal API
-    Route::prefix("goal")
-        ->middleware("auth:sanctum")
-        ->name("goal.")
-        ->group(function () {
-            Route::get("", [GoalController::class, "fetch"])->name("fetch");
-            Route::post("", [GoalController::class, "create"])->name("create");
-            Route::post("update/{id}", [GoalController::class, "update"])->name(
-                "update"
-            );
-            Route::delete("{id}", [GoalController::class, "delete"])->name(
-                "delete"
-            );
-        });
-
-    // Midyear Evaluation API
-    Route::prefix("midyear_evaluation")
-        ->middleware("auth:sanctum")
-        ->name("midyear_evaluation.")
-        ->group(function () {
-            Route::get("", [
-                Midyear_EvaluationController::class,
-                "fetch",
-            ])->name("fetch");
-            Route::post("", [
-                Midyear_EvaluationController::class,
-                "create",
-            ])->name("create");
-            Route::post("update/{id}", [
-                Midyear_EvaluationController::class,
-                "update",
-            ])->name("update");
-            Route::delete("{id}", [
-                Midyear_EvaluationController::class,
-                "delete",
-            ])->name("delete");
-        });
-
-    // Final Evaluation API
-    Route::prefix("final_evaluation")
-        ->middleware("auth:sanctum")
-        ->name("final_evaluation.")
-        ->group(function () {
-            Route::get("", [Final_EvaluationController::class, "fetch"])->name(
-                "fetch"
-            );
-            Route::post("", [
-                Final_EvaluationController::class,
-                "create",
-            ])->name("create");
-            Route::post("update/{id}", [
-                Final_EvaluationController::class,
-                "update",
-            ])->name("update");
-            Route::delete("{id}", [
-                Final_EvaluationController::class,
-                "delete",
-            ])->name("delete");
-        });
-
-    // Education API
-    Route::prefix("education")
-        ->middleware("auth:sanctum")
-        ->name("education.")
-        ->group(function () {
-            Route::get("", [EducationController::class, "fetch"])->name(
-                "fetch"
-            );
-            Route::post("", [EducationController::class, "create"])->name(
-                "create"
-            );
-            Route::post("update/{id}", [
-                EducationController::class,
-                "update",
-            ])->name("update");
-            Route::delete("{id}", [EducationController::class, "delete"])->name(
-                "delete"
-            );
-        });
-
-    // Education File API
-    Route::prefix("education_file")
-        ->middleware("auth:sanctum")
-        ->name("education_file.")
-        ->group(function () {
-            Route::get("", [Education_FileController::class, "fetch"])->name(
-                "fetch"
-            );
-            Route::post("", [Education_FileController::class, "create"])->name(
-                "create"
-            );
-            Route::delete("{id}", [
-                Education_FileController::class,
-                "delete",
-            ])->name("delete");
-        });
-
-    // Career Experience API
-    Route::prefix("career_experience")
-        ->middleware("auth:sanctum")
-        ->name("career_experience.")
-        ->group(function () {
-            Route::get("", [
-                Career_ExperienceController::class,
-                "fetch",
-            ])->name("fetch");
-            Route::post("", [
-                Career_ExperienceController::class,
-                "create",
-            ])->name("create");
-            Route::post("update/{id}", [
-                Career_ExperienceController::class,
-                "update",
-            ])->name("update");
-            Route::delete("{id}", [
-                Career_ExperienceController::class,
-                "delete",
-            ])->name("delete");
-        });
-
-    // Career file API
-    Route::prefix("career_file")
-        ->middleware("auth:sanctum")
-        ->name("career_file.")
-        ->group(function () {
-            Route::get("", [Career_FileController::class, "fetch"])->name(
-                "fetch"
-            );
-            Route::post("", [Career_FileController::class, "create"])->name(
-                "create"
-            );
-            Route::delete("{id}", [
-                Career_FileController::class,
-                "delete",
-            ])->name("delete");
-        });
-
-    // Insurance API
-    Route::prefix("insurance")
-        ->middleware("auth:sanctum")
-        ->name("insurance.")
-        ->group(function () {
-            Route::post("", [InsuranceController::class, "create"])->name(
-                "create"
-            );
-            Route::post("update/{id}", [
-                InsuranceController::class,
-                "update",
-            ])->name("update");
-            Route::delete("{id}", [InsuranceController::class, "delete"])->name(
-                "delete"
-            );
-        });
-
-    // Project API
-    Route::prefix("project")
-        ->middleware("auth:sanctum")
-        ->name("project.")
-        ->group(function () {
-            Route::get("", [ProjectController::class, "fetch"])->name("fetch");
-            Route::post("", [ProjectController::class, "create"])->name(
-                "create"
-            );
-            Route::post("update/{id}", [
-                ProjectController::class,
-                "update",
-            ])->name("update");
-            Route::delete("{id}", [ProjectController::class, "delete"])->name(
-                "delete"
-            );
-        });
-
-    // Task API
-    Route::prefix("task")
-        ->middleware("auth:sanctum")
-        ->name("task.")
-        ->group(function () {
-            Route::get("", [TaskController::class, "fetch"])->name("fetch");
-            Route::post("", [TaskController::class, "create"])->name("create");
-            Route::post("update/{id}", [TaskController::class, "update"])->name(
-                "update"
-            );
-            Route::delete("{id}", [TaskController::class, "delete"])->name(
-                "delete"
-            );
-        });
-
-    // Leave API
-    Route::prefix("leave")
-        ->middleware("auth:sanctum")
-        ->name("leave.")
-        ->group(function () {
-            Route::get("", [LeaveController::class, "fetch"])->name("fetch");
-            Route::post("", [LeaveController::class, "create"])->name("create");
-            Route::post("update/{id}", [
-                LeaveController::class,
-                "update",
-            ])->name("update");
-            Route::delete("{id}", [LeaveController::class, "delete"])->name(
-                "delete"
-            );
-        });
 });
 
-Route::middleware("role:admin|manager")->group(function () {
-    // User API
-    Route::name("auth.")->group(function () {
-        Route::middleware("auth:sanctum")->group(function () {
-            Route::get("userAll", [UserController::class, "getAll"])->name(
-                "getAll"
-            );
-        });
+// User File Routes
+
+Route::prefix('user_files')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get("fetch", [User_FileController::class, "fetch"])->name("fetch");
+        Route::post("", [User_FileController::class, "create"])->name("create");
+        Route::delete("{id}", [User_FileController::class, "delete"])->name("delete");
     });
-    // Department API
-    Route::prefix("department")
-        ->middleware("auth:sanctum")
-        ->name("department.")
-        ->group(function () {
-            Route::get("", [DepartmentController::class, "fetch"])->name(
-                "fetch"
-            );
-        });
-    // Team API
-    Route::prefix("team")
-        ->middleware("auth:sanctum")
-        ->name("team.")
-        ->group(function () {
-            Route::get("", [TeamController::class, "fetch"])->name("fetch");
-        });
-    // Responsibility API
-    Route::prefix("responsibility")
-        ->middleware("auth:sanctum")
-        ->name("responsibility.")
-        ->group(function () {
-            Route::get("", [ResponsibilityController::class, "fetch"])->name(
-                "fetch"
-            );
-            Route::post("", [ResponsibilityController::class, "create"])->name(
-                "create"
-            );
-            Route::delete("{id}", [
-                ResponsibilityController::class,
-                "delete",
-            ])->name("delete");
-        });
-    // Employee type API
-    Route::prefix("employee_type")
-        ->middleware("auth:sanctum")
-        ->name("employee_type.")
-        ->group(function () {
-            Route::get("", [Employee_TypeController::class, "fetch"])->name(
-                "fetch"
-            );
-        });
-    // Job level API
-    Route::prefix("job_level")
-        ->middleware("auth:sanctum")
-        ->name("job_level.")
-        ->group(function () {
-            Route::get("", [Job_LevelController::class, "fetch"])->name(
-                "fetch"
-            );
-        });
-    // Salary API
-    Route::prefix("salary")
-        ->middleware("auth:sanctum")
-        ->name("salary.")
-        ->group(function () {
-            Route::get("", [SalaryController::class, "fetch"])->name("fetch");
-        });
 });
 
-Route::middleware(
-    "role_or_permission:admin|create user|update user|delete user|create contract|update contract|delete contract|create department|update department|delete department|create teams|update teams|delete teams|create employee_type
-|update employee_type
-|delete employee_type
-|create job level|update job level|delete job level|create salary|update salary|delete salary"
-)->group(function () {
-    // User API
-    Route::name("auth.")->group(function () {
-        Route::middleware("auth:sanctum")->group(function () {
-            Route::post("register", [AuthController::class, "register"])->name(
-                "register"
-            );
-            Route::post("user/update/{id}", [
-                UserController::class,
-                "update",
-            ])->name("update");
+// Attendance Routes
 
-            Route::post("user/roles/{id}", [
-                UserController::class,
-                "assignRole",
-            ])->name("assignRole");
-            Route::post("user/update/roles/{id}", [
-                UserController::class,
-                "updateUserRole",
-            ])->name("updateUserRole");
-            
-            Route::delete("user/{id}", [UserController::class, "delete"])->name(
-                "delete"
-            );
-        });
+Route::prefix('attendances')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get("fetchByUser", [AttendanceController::class, "fetchByUser"])->name("fetchByUser");
+        Route::middleware('permission:read attendance')->get("fetchAll", [AttendanceController::class, "fetchAll"])->name("fetchAll");
+        Route::middleware('permission:update attendance')->post("update/{id}", [AttendanceController::class, "update"])->name("update");
+        Route::middleware('permission:delete user')->delete("delete/{id}", [AttendanceController::class, "delete"])->name("delete");
     });
-    // Contract API
-    Route::prefix("contract")
-        ->middleware("auth:sanctum")
-        ->name("contract.")
-        ->group(function () {
-            Route::post("", [ContractController::class, "create"])->name(
-                "create"
-            );
-            Route::post("update/{id}", [
-                ContractController::class,
-                "update",
-            ])->name("update");
-            Route::delete("{id}", [ContractController::class, "delete"])->name(
-                "delete"
-            );
-        });
-    // Department API
-    Route::prefix("department")
-        ->middleware("auth:sanctum")
-        ->name("department.")
-        ->group(function () {
-            Route::post("", [DepartmentController::class, "create"])->name(
-                "create"
-            );
-            Route::post("update/{id}", [
-                DepartmentController::class,
-                "update",
-            ])->name("update");
-            Route::delete("{id}", [
-                DepartmentController::class,
-                "delete",
-            ])->name("delete");
-        });
-    // Team API
-    Route::prefix("team")
-        ->middleware("auth:sanctum")
-        ->name("team.")
-        ->group(function () {
-            Route::post("", [TeamController::class, "create"])->name("create");
-            Route::post("update/{id}", [TeamController::class, "update"])->name(
-                "update"
-            );
-            Route::delete("{id}", [TeamController::class, "delete"])->name(
-                "delete"
-            );
-        });
-    // Employee type API
-    Route::prefix("employee_type")
-        ->middleware("auth:sanctum")
-        ->name("employee_type.")
-        ->group(function () {
-            Route::post("", [Employee_TypeController::class, "create"])->name(
-                "create"
-            );
-            Route::post("update/{id}", [
-                Employee_TypeController::class,
-                "update",
-            ])->name("update");
-            Route::delete("{id}", [
-                Employee_TypeController::class,
-                "delete",
-            ])->name("delete");
-        });
-    // Job level API
-    Route::prefix("job_level")
-        ->middleware("auth:sanctum")
-        ->name("job_level.")
-        ->group(function () {
-            Route::post("", [Job_LevelController::class, "create"])->name(
-                "create"
-            );
-            Route::post("update/{id}", [
-                Job_LevelController::class,
-                "update",
-            ])->name("update");
-            Route::delete("{id}", [Job_LevelController::class, "delete"])->name(
-                "delete"
-            );
-        });
-    // Salary API
-    Route::prefix("salary")
-        ->middleware("auth:sanctum")
-        ->name("salary.")
-        ->group(function () {
-            Route::post("", [SalaryController::class, "create"])->name(
-                "create"
-            );
-            Route::post("update/{id}", [
-                SalaryController::class,
-                "update",
-            ])->name("update");
-            Route::delete("{id}", [SalaryController::class, "delete"])->name(
-                "delete"
-            );
-        });
 });
 
-//Role API
-Route::prefix("role")
-    ->middleware("auth:sanctum")
-    ->name("role.")
-    ->group(function () {
-        Route::get("", [RoleController::class, "fetch"])->name("fetch");
-        Route::post("", [RoleController::class, "create"])->name("create");
-        Route::post("update/{id}", [RoleController::class, "update"])->name(
-            "update"
-        );
-        Route::delete("{id}", [RoleController::class, "delete"])->name(
-            "delete"
-        );
+// Career Experience Routes
+
+Route::prefix('career_experiences')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:read career experience')->get("fetch", [Career_ExperienceController::class, "fetch"])->name("fetch");
     });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:create career experience')->post("create", [Career_ExperienceController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:update career experience')->post("update/{id}", [Career_ExperienceController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:delete career experience')->delete("delete/{id}", [Career_ExperienceController::class, "delete"])->name("delete");
+    });
+});
+
+// Career File Routes
+
+Route::prefix('career_files')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get("fetch", [Career_FileController::class, "fetch"])->name("fetch");
+        Route::post("create", [Career_FileController::class, "create"])->name("create");
+        Route::delete("delete/{id}", [Career_FileController::class, "delete"])->name("delete");
+    });
+});
+
+// Contract Routes
+
+Route::prefix('contracts')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:read contract')->get("fetch", [ContractController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:create contract')->post("create", [ContractController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:update contract')->post("update/{id}", [ContractController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:delete contract')->delete("delete/{id}", [ContractController::class, "delete"])->name("delete");
+    });
+});
+
+// Department Routes
+
+Route::prefix('departments')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:read department')->get("fetch", [DepartmentController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:create department')->post("create", [DepartmentController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:update department')->post("update/{id}", [DepartmentController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:delete department')->delete("delete/{id}", [DepartmentController::class, "delete"])->name("delete");
+    });
+});
+
+// Education Routes
+
+Route::prefix('educations')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:read education')->get("fetch", [EducationController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:create education')->post("create", [EducationController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:update education')->post("update/{id}", [EducationController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:delete education')->delete("delete/{id}", [EducationController::class, "delete"])->name("delete");
+    });
+});
+
+// Education File Routes
+
+Route::prefix('education_files')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get("fetch", [Education_FileController::class, "fetch"])->name("fetch");
+        Route::post("create", [Education_FileController::class, "create"])->name("create");
+        Route::delete("delete/{id}", [Education_FileController::class, "delete"])->name("delete");
+    });
+});
+
+// Employee Type Routes
+
+Route::prefix('employee_types')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:read employee type')->get("fetch", [Employee_TypeController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:create employee type')->post("create", [Employee_TypeController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:update employee type')->post("update/{id}", [Employee_TypeController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:delete employee type')->delete("delete/{id}", [Employee_TypeController::class, "delete"])->name("delete");
+    });
+});
+
+// Final Evaluation Routes
+
+Route::prefix('final_evaluations')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:read final evaluation')->get("fetch", [Final_EvaluationController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:create final evaluation')->post("create", [Final_EvaluationController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:update final evaluation')->post("update/{id}", [Final_EvaluationController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:delete final evaluation')->delete("delete/{id}", [Final_EvaluationController::class, "delete"])->name("delete");
+    });
+});
+
+// Goals Routes
+
+Route::prefix('goals')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:read goal')->get("fetch", [GoalController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:create goal')->post("create", [GoalController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:update goal')->post("update/{id}", [GoalController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:delete goal')->delete("delete/{id}", [GoalController::class, "delete"])->name("delete");
+    });
+});
+
+// Insurance Routes
+
+Route::prefix('insurances')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:read insurance')->get("fetch", [InsuranceController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:create insurance')->post("create", [InsuranceController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:update insurance')->post("update/{id}", [InsuranceController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:delete insurance')->delete("delete/{id}", [InsuranceController::class, "delete"])->name("delete");
+    });
+});
+
+// Job Level Routes
+
+Route::prefix('job_levels')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:read job level')->get("fetch", [Job_LevelController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:create job level')->post("create", [Job_LevelController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:update job level')->post("update/{id}", [Job_LevelController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:delete job level')->delete("delete/{id}", [Job_LevelController::class, "delete"])->name("delete");
+    });
+});
+
+// Leave Routes
+
+Route::prefix('leaves')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:read leave')->get("fetch", [LeaveController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:create leave')->post("create", [LeaveController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:update leave')->post("update/{id}", [LeaveController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:delete leave')->delete("delete/{id}", [LeaveController::class, "delete"])->name("delete");
+    });
+});
+
+// Midyear Evaluation Routes
+
+Route::prefix('midyear_evaluations')->group(function(){
+    Route::middleware('auth:sanctum')->group(function(){
+        Route::middleware('permission:read midyear evaluation')->get("fetch", [Midyear_EvaluationController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function(){
+        Route::middleware('permission:create midyear evaluation')->post("create", [Midyear_EvaluationController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function(){
+        Route::middleware('permission:update midyear evaluation')->post("update/{id}", [Midyear_EvaluationController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function(){
+        Route::middleware('permission:delete midyear evaluation')->delete("delete/{id}", [Midyear_EvaluationController::class, "delete"])->name("delete");
+    });
+});
+
+// Project Routes
+
+Route::prefix('projects')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:read project')->get("fetch", [ProjectController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:create project')->post("create", [ProjectController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:update project')->post("update/{id}", [ProjectController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:delete project')->delete("delete/{id}", [ProjectController::class, "delete"])->name("delete");
+    });
+});
+
+// Responsibility Routes
+
+Route::prefix('responsibilities')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:read responsibility')->get("fetch", [ResponsibilityController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:create responsibility')->post("create", [ResponsibilityController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:update responsibility')->post("update/{id}", [ResponsibilityController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:delete responsibility')->delete("delete/{id}", [ResponsibilityController::class, "delete"])->name("delete");
+    });
+});
+
+//Role Routes
+
+Route::prefix('roles')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->get("fetch", [RoleController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->post("create", [RoleController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->post("update/{id}", [RoleController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->delete("delete/{id}", [RoleController::class, "delete"])->name("delete");
+    });
+});
+
+// Salary Routes
+
+Route::prefix('salaries')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:read salary')->get("fetch", [SalaryController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:create salary')->post("create", [SalaryController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:update salary')->post("update/{id}", [SalaryController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:delete salary')->delete("delete/{id}", [SalaryController::class, "delete"])->name("delete");
+    });
+});
+
+// Task Routes
+
+Route::prefix('tasks')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:read task')->get("fetch", [TaskController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:create task')->post("create", [TaskController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:update task')->post("update/{id}", [TaskController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:delete task')->delete("delete/{id}", [TaskController::class, "delete"])->name("delete");
+    });
+});
+
+// Team Routes
+
+Route::prefix('teams')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:read team')->get("fetch", [TeamController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:create team')->post("create", [TeamController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:update team')->post("update/{id}", [TeamController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('permission:delete team')->delete("delete/{id}", [TeamController::class, "delete"])->name("delete");
+    });
+});

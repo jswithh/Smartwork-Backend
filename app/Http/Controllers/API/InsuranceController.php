@@ -8,7 +8,7 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Requests\CreateInsuranceRequest;
 use App\Http\Requests\UpdateInsuranceRequest;
 use Illuminate\Http\Request;
-
+use Vinkla\Hashids\Facades\Hashids;
 
 class InsuranceController extends Controller
 {
@@ -36,33 +36,31 @@ class InsuranceController extends Controller
         $limit = $request->input('limit', 10);
 
         // get multiple data
-        $insuranceQuery = Insurance::query()->with('employee_type');
+        $insuranceQuery = Insurance::query()->with('user');
 
         // get single data
 
-        if($id){
-            $insurance = $insuranceQuery->find($id)->with('employee_type');
+       if($request->has('id')){
+            $id = Hashids::decode($id);
+            $insurance = $insuranceQuery->where('id', $id)->get();
 
-            if($insurance){
+            if($insurance->isNotEmpty()){
                 return ResponseFormatter::success($insurance, 'Insurance Found');
             }
-            return ResponseFormatter::error(null, 'Insurance Not Found');
+            return ResponseFormatter::error('Insurance Not Found',404);
         }
 
 
-        if($user_id){
-           $insurance = $insuranceQuery->where('user_id', $user_id)->get()->with('employee_type');
-
-            if($insurance){
+        if($request->has('user_id')){
+            $user_id = Hashids::decode($user_id);
+            $insurance = $insuranceQuery->where('user_id', $user_id)->get();
+        
+            if($insurance->isNotEmpty()){
                 return ResponseFormatter::success($insurance, 'Insurance Found');
             }
-            return ResponseFormatter::error(null, 'Insurance Not Found');
-        };
-
-        if($insuranceQuery === null){
-            return ResponseFormatter::error(null, 'Insurance Not Found');
+            return ResponseFormatter::error('Insurance Not Found',404);
         }
-
+        
         return ResponseFormatter::success($insuranceQuery->paginate($limit), 'Insurance Found');
 
         
@@ -70,26 +68,21 @@ class InsuranceController extends Controller
 
     public function update(UpdateInsuranceRequest $request, $id){
        
-
+        $id = Hashids::decode($id)[0];
         $insurance = Insurance::find($id);
 
         if($insurance){
-            $insurance->update([
-                'user_id' => $request->user_id,
-                'insurance_type' => $request->insurance_type,
-                'insurance_number' => $request->insurance_number,
-                'secondary_insurance_type' => $request->secondary_insurance_type,
-                'secondary_insurance_number' => $request->secondary_insurance_number,
-            ]
+            $insurance->update($request->all()
             );
 
             return ResponseFormatter::success($insurance, 'Insurance Updated');
         }
 
-        return ResponseFormatter::error(null, 'Insurance Failed to Update');
+        return ResponseFormatter::error('Insurance Failed to Update', 404);
     }
 
     public function delete($id){
+        $id = Hashids::decode($id)[0];
         $insurance = Insurance::find($id);
 
         if($insurance){

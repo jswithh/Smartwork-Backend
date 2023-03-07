@@ -8,6 +8,7 @@ use App\Http\Requests\CreateRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Vinkla\Hashids\Facades\Hashids;
 
 
 class RoleController extends Controller
@@ -21,14 +22,15 @@ class RoleController extends Controller
         $roles = Role::with('permissions')->get();
         $id = $request->input('id');
        
-
-        if($id){
-            $role = $roles->find($id);
-            if($role){
-                return ResponseFormatter::success($role, 'Role found');
+        if($request->has('id')){
+            $id = Hashids::decode($id);
+            $roles = Role::with('permissions')->find($id);
+            if($roles->isNotEmpty()){
+                return ResponseFormatter::success($roles, 'Role list');
             }
-            return ResponseFormatter::error(null, 'Role not found');
+            return ResponseFormatter::error('Role not found',404);
         }
+
         return ResponseFormatter::success($roles, 'Role list'); 
     }
 
@@ -47,19 +49,22 @@ class RoleController extends Controller
     }
 
     public function update(UpdateRoleRequest $request, $id){
-        $role = Role::find($id);
-        if($role){
-            $role->name = $request->name;
-            $role->guard_name = $request->guard_name == null ? 'web' : $request->guard_name;
-            $permission = explode(',', $request->input('permission'));
-            $role->syncPermissions($permission);
-            $role->save();
-            return ResponseFormatter::success($role, 'Role updated');
-        }
-        return ResponseFormatter::error(null, 'Role not updated');
+    $id = Hashids::decode($id)[0];
+    $role = Role::find($id);
+    if($role){
+        $role->name = $request->name;
+        $role->guard_name = $request->guard_name == null ? 'web' : $request->guard_name;
+        $permissions = explode(',', $request->input('permission'));
+        $role->syncPermissions($permissions);
+        $role->save();
+        return ResponseFormatter::success($role, 'Role updated');
     }
+    return ResponseFormatter::error(null, 'Role not updated');
+}
+
 
     public function delete($id){
+        $id = Hashids::decode($id)[0];
         $role = Role::find($id);
         if($role){
             $role->delete();

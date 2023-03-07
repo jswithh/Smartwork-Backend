@@ -10,8 +10,7 @@ use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Permission;
-
+use Vinkla\Hashids\Facades\Hashids;
 
 
 class UserController extends Controller
@@ -54,32 +53,7 @@ class UserController extends Controller
             }
 
             // Create user
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'hrcode'=> $request->hrcode,
-                'gender'=> $request->gender,
-                'address'=> $request->address,
-                'phone'=> $request->phone,
-                'birthday'=> $request->birthday,
-                'birthplace'=> $request->birthplace,
-                'religion'=> $request->religion,
-                'marital_status',
-                'dependent',
-                'nationality'=> $request->nationality,
-                'education'=> $request->education,
-                'name_of_school'=> $request->name_of_school,
-                'number_of_identity'=> $request->number_of_identity,
-                'place_of_identity'=> $request->place_of_identity,
-                'branch'=> $request->branch,
-                'department_id'=> $request->department_id,
-                'team_id'=> $request->team_id,
-                'job_level'=> $request->job_level,
-                'employee_type'=> $request->employee_type,
-                'profile_photo_path'=> isset($path) ? $path : null,
-                'is_active'=> $request->is_active,
-            ]);
+            $user = User::create($request->all());
 
             // Generate token
             $tokenResult = $user->createToken('authToken')->plainTextToken;
@@ -114,7 +88,7 @@ class UserController extends Controller
     'User_File', 
     'salary', 
     'education.Education_file',
-    'career_experience.career_file',
+    'users.career_file',
     'contract',
     'insurance',
 ])->findOrFail($request->user()->id);
@@ -136,40 +110,50 @@ class UserController extends Controller
 
         $userQuery = $user->where('is_active', 1)->with(['department', 'team', 'user_file'])->paginate($limit);
 
-        if ($id){
-            $userQuery = User::where('id', $id)->with(['department', 'team', 'user_file'])->first();
-
-            if ($userQuery){
-
-                return ResponseFormatter::success($userQuery, 'Data user berhasil diambil');
+        if($request->has('id')){
+            $id = Hashids::decode($id);
+            if($id !== null){
+               $users = $user->where('id', $id)->with(['department', 'team', 'user_file'])->get();
             }
-            
-               return ResponseFormatter::error('Employee not found', 404);
+
+            if(!$users->isEmpty()){
+                return ResponseFormatter::success($users, 'Data user berhasil diambil');
+            }                
+             return ResponseFormatter::error('User tidak ditemukan', 404);
         }
+
 
         if($name){
             $userQuery = User::where('name', 'like', '%'.$name.'%')->with(['department', 'team', 'user_file'])->get();
 
-            if($userQuery){
+            if(!$userQuery->isEmpty()){
                 return ResponseFormatter::success($userQuery, 'Data user berhasil diambil');
             }
             return ResponseFormatter::error('Employee not found', 404);
         }
 
-        if($team_id){
-            $userQuery = User::where('team_id', $team_id)->with(['department', 'team', 'user_file'])->get();
-            if($userQuery){
-                return ResponseFormatter::success($userQuery, 'Data user berhasil diambil');
+       if($request->has('team_id')){
+            $team_id = Hashids::decode($team_id);
+            if($team_id !== null){
+               $users = $user->where('team_id', $team_id)->with(['department', 'team', 'user_file'])->get();
             }
-            return ResponseFormatter::error('Employee not found', 404);
+
+            if(!$users->isEmpty()){
+                return ResponseFormatter::success($users, 'Data user berhasil diambil');
+            }                
+             return ResponseFormatter::error('User tidak ditemukan', 404);
         }
 
-        if($department_id){
-            $userQuery = User::where('department_id', $department_id)->with(['department', 'team', 'user_file'])->get();
-            if($userQuery){
-                return ResponseFormatter::success($userQuery, 'Data user berhasil diambil');
+        if($request->has('department_id')){
+            $department_id = Hashids::decode($department_id);
+            if($department_id !== null){
+               $users = $user->where('department_id', $department_id)->with(['department', 'team', 'user_file'])->get();
             }
-            return ResponseFormatter::error('Employee not found', 404);
+
+            if(!$users->isEmpty()){
+                return ResponseFormatter::success($users, 'Data user berhasil diambil');
+            }                
+             return ResponseFormatter::error('User tidak ditemukan', 404);
         }
 
         return ResponseFormatter::success(
@@ -178,7 +162,8 @@ class UserController extends Controller
         );
     }
 
-    public function deleteUser($id){
+    public function delete($id){
+        $id = Hashids::decode($id)[0];
         $User = User::find($id);
 
         if($User){
@@ -192,33 +177,11 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, $id){
         try {
+            $id = Hashids::decode($id)[0];
             $users = User::find($id);
             
             if($users){
-                $users->name = $request->name;
-                $users->email = $request->email;
-                $users->hrcode = $request->hrcode;
-                $users->gender = $request->gender;
-                $users->addres = $request->addres;
-                $users->phone = $request->phone;
-                $users->birthday = $request->birthday;
-                $users->birthplace = $request->birthplace;
-                $users->religion = $request->religion;
-                $users->marital_status = $request->marital_status;
-                $users->dependent = $request->dependent;
-                $users->nationality = $request->nationality;
-                $users->education = $request->education;
-                $users->name_of_school = $request->name_of_school;
-                $users->number_of_identity = $request->number_of_identity;
-                $users->place_of_identity = $request->place_of_identity;
-                $users->branch = $request->branch;
-                $users->department_id = $request->department_id;
-                $users->team_id = $request->team_id;
-                $users->job_level = $request->job_level;
-                $users->employee_type = $request->employee_type;
-                $users->is_active = $request->is_active;
-                $users->password = Hash::make($request->password);
-                $users->save();
+                $users->update($request->all());
         
             }
 
@@ -229,23 +192,10 @@ class UserController extends Controller
         }
     }
 
-    public function delete($id){
-        $users = User::find($id);
 
-        if($users){
-            $users->delete();
-            return ResponseFormatter::success($users, 'User berhasil dihapus');
-        }
-
-        return ResponseFormatter::error('User not found', 404);
-
-    }
 
     public function assignRole(Request $request, $id){
-
-          if (!$request->user()->hasRole('admin')) {
-            return ResponseFormatter::error('Anda tidak memiliki hak akses', 403);
-    }
+        $id = Hashids::decode($id)[0];
         $user = User::find($id);
         $user->assignRole($request->role);
         $permission = explode(',', $request->input('permission'));
@@ -254,9 +204,7 @@ class UserController extends Controller
     }
 
     public function updateUserRole(Request $request, $id){
-         if (!$request->user()->hasRole('admin')) {
-            return ResponseFormatter::error('Anda tidak memiliki hak akses', 403);
-            }
+        $id = Hashids::decode($id)[0];
         $users = User::find($id);
         $users->syncRoles($request->role);
         $permission = explode(',', $request->input('permission'));

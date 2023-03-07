@@ -58,7 +58,7 @@ class UpdateAttendanceRequest extends FormRequest
 
             'work_hours'=>[
                 'nullable',
-                'float',
+                'string',
             ],
 
             'break_in'=>[

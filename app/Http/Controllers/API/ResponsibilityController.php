@@ -9,14 +9,16 @@ use App\Http\Requests\UpdateResponsibilityRequest;
 use App\Models\Responsibility;
 use Exception;
 use Illuminate\Http\Request;
+use Vinkla\Hashids\Facades\Hashids;
 
 class ResponsibilityController extends Controller
 {
     public function fetch(Request $request){
         
-        try {
+       
             $id = $request->input('id');
             $name = $request->input('name');
+            $department_id = $request->input('department_id');
             $limit = $request->input('limit', 10);
     
             $responsibilityQuery = Responsibility::query();
@@ -37,7 +39,8 @@ class ResponsibilityController extends Controller
                     );
             }
             // smartwork.id/api/responsibility
-            $responsibility = $responsibilityQuery->where('department_id', $request->department_id);
+            $department_id = Hashids::decode($department_id);
+            $responsibility = $responsibilityQuery->where('department_id', $department_id);
     
             // smartwork.id/api/responsibility?name=hracademy
             if ($name){
@@ -45,21 +48,21 @@ class ResponsibilityController extends Controller
                 $responsibility->where('name', 'like', '%' . $name . '%');
             }
     
-            return ResponseFormatter::success(
-                $responsibility->paginate($limit),
-                'Data list responsibility berhasil diambil'
+            $responsibilities = $responsibility->paginate($limit);
+
+            if($responsibilities->isNotEmpty()){
+                return ResponseFormatter::success(
+                    $responsibilities,
+                    'Data responsibility berhasil diambil'
+                );
+            }
+
+            return ResponseFormatter::error(
+                'Data responsibility tidak ada',
+                404
             );
             
-        } catch (Exception $error) {
-            return ResponseFormatter::error(
-                [
-                    'message' => 'Something went wrong',
-                    'error' => $error
-                ],
-                'Data responsibility gagal diambil',
-                500
-            );
-        }
+        
     }
     public function create(CreateResponsibilityRequest $request){
         try {
@@ -77,26 +80,18 @@ class ResponsibilityController extends Controller
 
             
         } catch (Exception $error) {
-            return ResponseFormatter::error(
-                [
-                    'message' => 'Something went wrong',
-                    'error' => $error
-                ],
-                'Data responsibility gagal ditambahkan',
-                500
-            );
+            return ResponseFormatter::error('Data responsibility gagal ditambahkan', 500);
         }
     }
 
-    public function update(UpdateResponsibilityRequest $request){
+    public function update(UpdateResponsibilityRequest $request, $id){
         try {
-            $responsibility = Responsibility::find($request->id);
-
+            
+            $id = Hashids::decode($id)[0];
+            $responsibility = Responsibility::find($id);
             // check responsibility is owned by user 
             if($responsibility){
-                $responsibility->name = $request->name;
-                $responsibility->department_id = $request->department_id;
-                $responsibility->save();
+                $responsibility->update($request->all());
 
                 return ResponseFormatter::success(
                     $responsibility,
@@ -109,16 +104,13 @@ class ResponsibilityController extends Controller
             );
         } catch (Exception $error) {
             return ResponseFormatter::error(
-                [
-                    'message' => 'Something went wrong',
-                    'error' => $error
-                ],
-                'Data responsibility gagal diubah',
+                $error->getMessage(),
                 500
             );
         }
     }
     public function delete($id){
+        $id = Hashids::decode($id)[0];
         $responsibility = Responsibility::find($id);
 
         // check responsibility is owned by user 

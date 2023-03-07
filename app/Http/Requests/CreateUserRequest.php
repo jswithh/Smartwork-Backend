@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Rules\Password;
 
 class CreateUserRequest extends FormRequest
@@ -14,7 +15,7 @@ class CreateUserRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+       return Auth::check();
     }
 
     /**
@@ -36,6 +37,8 @@ class CreateUserRequest extends FormRequest
                 'birthplace' => ['nullable', 'string' ],
                 'religion' => ['nullable', 'string' ],
                 'nationality' => ['nullable', 'string' ],
+                'marital_status' => ['nullable', 'string' ],
+                'dependent' => ['nullable', 'string' ],
                 'education' => ['nullable', 'string' ],
                 'name_of_school' => ['nullable', 'string' ],
                 'number_of_identity' => ['nullable', 'integer' ],

@@ -12,13 +12,18 @@ class Team extends Model
 
     protected $fillable = [
         'name',
+        'department_id',
         'icon',
-        
     ];
 
-    public function employees(){
-        return $this->hasMany(Employee::class);
+   
+
+    public function user(){
+        return $this->hasMany(User::class);
     }
 
+    public function department(){
+        return $this->belongsTo(Department::class);
+    }
     
 }

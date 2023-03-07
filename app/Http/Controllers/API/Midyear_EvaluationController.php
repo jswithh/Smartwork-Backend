@@ -8,18 +8,13 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Requests\CreateMidyear_EvaluationRequest;
 use App\Http\Requests\UpdateMidyear_EvaluationRequest;
 use Illuminate\Http\Request;
-
+use Vinkla\Hashids\Facades\Hashids;
 
 class Midyear_EvaluationController extends Controller
 {
     public function create(CreateMidyear_EvaluationRequest $request){
 
-        $midyear_evaluation = Midyear_Evaluation::create([
-            'user_id' => $request->user_id,
-            'goal_id' => $request->goal_id,
-            'midyear_realization' => $request->midyear_realization,
-            'midyear_manager_comment' => $request->midyear_manager_comment,
-        ]);
+        $midyear_evaluation = Midyear_Evaluation::create($request->all());
        
 
         if($midyear_evaluation){
@@ -39,42 +34,43 @@ class Midyear_EvaluationController extends Controller
 
         // get single data
 
-        if($id){
-            $midyear_evaluation = $midyear_evaluationQuery->find($id);
+        if($request->has('id')){
+            $id = Hashids::decode($id);
+            $midyear_evaluation = $midyear_evaluationQuery->where('id', $id)->get();
 
-            if($midyear_evaluation){
+            if($midyear_evaluation->isNotEmpty()){
                 return ResponseFormatter::success($midyear_evaluation, 'Midyear_Evaluations Found');
             }
-            return ResponseFormatter::error(null, 'Midyear_Evaluations Not Found');
+            return ResponseFormatter::error('Midyear_Evaluations Not Found',404);
         }
 
 
-        if($user_id){
-           $midyear_evaluation = $midyear_evaluationQuery->where('user_id', $user_id)->get();
+        if($request->has('user_id')){
+            $user_id = Hashids::decode($user_id);
+            $midyear_evaluation = $midyear_evaluationQuery->where('user_id', $user_id)->get();
 
-            if($midyear_evaluation){
+            if($midyear_evaluation->isNotEmpty()){
                 return ResponseFormatter::success($midyear_evaluation, 'Midyear_Evaluations Found');
             }
-            return ResponseFormatter::error(null, 'Midyear_Evaluations Not Found');
-        };
+            return ResponseFormatter::error('Midyear_Evaluations Not Found',404);
+        }
 
-        return ResponseFormatter::success($midyear_evaluationQuery->paginate($limit), 'Midyear_Evaluations Found');
+        $midyear_evaluation =$midyear_evaluationQuery->paginate($limit);
+        if($midyear_evaluation->isNotEmpty()){
+            return ResponseFormatter::success($midyear_evaluation, 'Midyear_Evaluations Found');
+        }
+        return ResponseFormatter::error('Midyear_Evaluations Not Found',404);
 
         
     }
 
     public function update(UpdateMidyear_EvaluationRequest $request, $id){
        
-
+        $id = Hashids::decode($id)[0];
         $midyear_evaluation = Midyear_Evaluation::find($id);
 
         if($midyear_evaluation){
-            $midyear_evaluation->update([
-            'user_id' => $request->user_id,
-            'goal_id' => $request->goal_id,
-            'midyear_realization' => $request->midyear_realization,
-            'midyear_manager_comment' => $request->midyear_manager_comment,
-            ]
+            $midyear_evaluation->update($request->all()
             );
 
             return ResponseFormatter::success($midyear_evaluation, 'Midyear_Evaluations Updated');
@@ -84,6 +80,7 @@ class Midyear_EvaluationController extends Controller
     }
 
     public function delete($id){
+        $id = Hashids::decode($id)[0];
         $midyear_evaluation = Midyear_Evaluation::find($id);
 
         if($midyear_evaluation){

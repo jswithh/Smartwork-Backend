@@ -26,8 +26,8 @@ class UpdateTeamRequest extends FormRequest
     {
         return [
             'name' => 'nullable|string|max:255',
+            'department_id' => 'nullable|integer|exists:departments,id',
             'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'company_id' => 'nullable|integer|exists:companies,id',
         ];
     }
 }

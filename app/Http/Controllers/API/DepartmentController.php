@@ -9,6 +9,7 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateDepartmentRequest;
 use App\Http\Requests\UpdateDepartmentRequest;
+use Vinkla\Hashids\Facades\Hashids;
 
 class DepartmentController extends Controller
 {
@@ -23,14 +24,17 @@ class DepartmentController extends Controller
         $departmentQuery = Department::query();
 
         // Get single data
-        if ($id) {
-            $department = $departmentQuery->with('responsibilities')->find($id);
-
-            if ($department) {
-                return ResponseFormatter::success($department, 'Department found');
+        if($request->has('id')){
+            $id = Hashids::decode($id);
+            $encode = Hashids::encode(2);
+            if($id !== null){
+               $department= $departmentQuery->where('id', $id)->get();
             }
 
-            return ResponseFormatter::error('Department not found', 404);
+            if($department->isNotEmpty()){
+                return ResponseFormatter::success($department, $encode);
+            }
+            return ResponseFormatter::error('Career experience Not Found', 404);
         }
 
         // Get multiple data
@@ -58,11 +62,7 @@ class DepartmentController extends Controller
     {
         try {
             // Create department
-            $department = Department::create([
-                'name' => $request->name,
-                'parent' => $request->parent,
-                'level' => $request->level,
-            ]);
+            $department = Department::create($request->all());
 
             if (!$department) {
                 throw new Exception('Department not created');
@@ -79,6 +79,7 @@ class DepartmentController extends Controller
 
         try {
             // Get department
+            $id = Hashids::decode($id)[0];
             $department = Department::find($id);
 
             // Check if department exists
@@ -87,11 +88,7 @@ class DepartmentController extends Controller
             }
 
             // Update department
-            $department->update([
-                'name' => $request->name,
-                'parent' => $request->parent,
-                'level' => $request->level,
-            ]);
+            $department->update($request->all());
 
             return ResponseFormatter::success($department, 'Department updated');
         } catch (Exception $e) {
@@ -103,6 +100,7 @@ class DepartmentController extends Controller
     {
         try {
             // Get department
+            $id = Hashids::decode($id)[0];
             $department = Department::find($id);
 
             // TODO: Check if department is owned by user

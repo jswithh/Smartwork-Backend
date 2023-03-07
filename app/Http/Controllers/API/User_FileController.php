@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserFileRequest;
 use Illuminate\Http\Request;
 use App\Models\User_File;
+use Vinkla\Hashids\Facades\Hashids;
 
 class User_FileController extends Controller
 {
@@ -33,27 +34,29 @@ class User_FileController extends Controller
     public function fetch(Request $request){
 
         try {
-            $id = $request->id;
+            $id = $request->input('id');
             $user_id = $request->user_id;
             
-            $user_files = User_File::query();
+            $user_files = User_File::query()->get();
 
-            if($id){
-                $files = $user_files->find($id);
+            if($request->has('id')){
+                $id = Hashids::decode($id)[0];
+                $user_files->where('id', $id);
 
-                if($files){
-                    return ResponseFormatter::success($files, 'File Found');
+                if(!$user_files->isEmpty()){
+                    return ResponseFormatter::success($user_files, 'File Found');
                 }
-                return ResponseFormatter::error(null,'File not found');
+                return ResponseFormatter::error('File not found',404);
             }
 
-            if($user_id){
-                $files = $user_files->where('user_id', $user_id)->get();
+            if($request->has('user_id')){
+                $user_id = Hashids::decode($user_id)[0];
+                $user_files->where('user_id', $user_id);
 
-                if($files){
-                    return ResponseFormatter::success($files, 'File Found');
+                if(!$user_files->isEmpty()){
+                    return ResponseFormatter::success($user_files, 'File Found');
                 }
-                return ResponseFormatter::error(null,'File not found');
+                return ResponseFormatter::error('File not found',404);
             }
 
             return ResponseFormatter::success($user_files, 'File Found');
@@ -65,6 +68,7 @@ class User_FileController extends Controller
 
     public function delete($id){
         try {
+            $id = Hashids::decode($id)[0];
             $user_file = User_File::find($id);
 
             if($user_file){

@@ -30,6 +30,11 @@ class CreateTeamRequest extends FormRequest
                 'string',
                 'max:255',
             ],
+            'department_id'=>[
+                'required',
+                'integer',
+                'exists:departments,id'
+            ],
         'icon'=>'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }

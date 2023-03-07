@@ -8,26 +8,13 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Requests\CreateSalaryRequest;
 use App\Http\Requests\UpdateSalaryRequest;
 use Illuminate\Http\Request;
-
+use Vinkla\Hashids\Facades\Hashids;
 
 class SalaryController extends Controller
 {
     public function create(CreateSalaryRequest $request){
 
-        $salary = Salary::create([
-            'user_id' => $request->user_id,
-            'bank_account_number' => $request->bank_account_number,
-            'bank_name' => $request->bank_name,
-            'bank_of_issue' => $request->bank_of_issue,
-            'npwp_number' => $request->npwp_number,
-            'signed_date' => $request->signed_date,
-            'sallary_type' => $request->sallary_type,
-            'sallary_form' => $request->sallary_form,
-            'amout_sallary' => $request->amout_sallary,
-            'amout_allowance' => $request->amout_allowance,
-            'allowance_type' => $request->allowance_type,
-            'note' => $request->note,
-        ]);
+        $salary = Salary::create($request->all());
        
 
         if($salary){
@@ -47,51 +34,41 @@ class SalaryController extends Controller
 
         // get single data
 
-        if($id){
-            $salary = $salaryQuery->find($id);
+       if($request->has('id')){
+            $id = Hashids::decode($id);
+            $salary = $salaryQuery->where('id', $id)->get();
 
-            if($salary){
+            if($salary->isNotEmpty()){
                 return ResponseFormatter::success($salary, 'Salary Found');
             }
-            return ResponseFormatter::error(null, 'Salary Not Found');
+            return ResponseFormatter::error('Salary Not Found',404);
         }
 
+        if($request->has('user_id')){
+            $user_id = Hashids::decode($user_id);
+            $salary = $salaryQuery->where('user_id', $user_id)->get();
 
-        if($user_id){
-           $salary = $salaryQuery->where('user_id', $user_id)->first();
-
-            if($salary){
-                return ResponseFormatter::success($salary, 'Salary Found');
+            if($salary ){
+                return ResponseFormatter::success($salary , 'Salary Found');
             }
-            return ResponseFormatter::error(null, 'Salary Not Found');
-        };
+            return ResponseFormatter::error('Salary Not Found',404);
+        }
 
-        return ResponseFormatter::success($salaryQuery->paginate($limit), 'Salary Found');
-
+        $salary = $salaryQuery->paginate($limit);
+        if($salary){
+            return ResponseFormatter::success($salary, 'Salary Found');
+        }
+        return ResponseFormatter::error('Salary Not Found',404);
         
     }
 
     public function update(UpdateSalaryRequest $request, $id){
        
-
+        $id = Hashids::decode($id)[0];
         $salary = Salary::find($id);
 
         if($salary){
-            $salary->update([
-                'user_id' => $request->user_id,
-                'bank_account_number' => $request->bank_account_number,
-                'bank_name' => $request->bank_name,
-                'bank_of_issue' => $request->bank_of_issue,
-                'npwp_number' => $request->npwp_number,
-                'signed_date' => $request->signed_date,
-                'sallary_type' => $request->sallary_type,
-                'sallary_form' => $request->sallary_form,
-                'amout_sallary' => $request->amout_sallary,
-                'amout_allowance' => $request->amout_allowance,
-                'allowance_type' => $request->allowance_type,
-                'note' => $request->note,
-            ]
-            );
+            $salary->update($request->all());
 
             return ResponseFormatter::success($salary, 'Salary Updated');
         }
@@ -100,6 +77,7 @@ class SalaryController extends Controller
     }
 
     public function delete($id){
+        $id = Hashids::decode($id)[0];
         $salary = Salary::find($id);
 
         if($salary){

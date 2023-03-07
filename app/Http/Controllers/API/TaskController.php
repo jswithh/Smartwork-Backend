@@ -8,26 +8,13 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Requests\CreateTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use Illuminate\Http\Request;
-
+use Vinkla\Hashids\Facades\Hashids;
 
 class TaskController extends Controller
 {
     public function create(CreateTaskRequest $request){
 
-        $task = Task::create([
-                'project_id' => $request->project_id,
-                'name' => $request->name,
-                'description' => $request->description,
-                'priority' => $request->priority,
-                'date_added' => $request->date_added,
-                'start_date' => $request->start_date,
-                'due_date' => $request->due_date,
-                'date_completed' => $request->date_completed,
-                'status' => $request->status,
-                'created_by' => $request->created_by,
-                'assigned_to' => $request->assigned_to,
-                
-        ]);
+        $task = Task::create($request->all());
        
 
         if($task){
@@ -39,7 +26,7 @@ class TaskController extends Controller
 
     public function fetch(Request $request){
         $id = $request->input('id');
-        $user_id = $request->input('user_id');
+        $created_by = $request->input('created_by');
         $limit = $request->input('limit', 10);
 
         // get multiple data
@@ -47,24 +34,26 @@ class TaskController extends Controller
 
         // get single data
 
-        if($id){
-            $task = $taskQuery->find($id);
+        if($request->has('id')){
+            $id = Hashids::decode($id);
+            $task = $taskQuery->where('id', $id)->get();
 
-            if($task){
+            if($task->isNotEmpty()){
                 return ResponseFormatter::success($task, 'Task Found');
             }
-            return ResponseFormatter::error(null, 'Task Not Found');
+            return ResponseFormatter::error('Task Not Found',404);
         }
 
 
-        if($user_id){
-           $task = $taskQuery->where('created_by', $user_id)->get();
+        if($request->has('created_by')){
+            $created_by = Hashids::decode($created_by);
+            $task = $taskQuery->where('created_by', $created_by)->get();
 
-            if($task){
-                return ResponseFormatter::success($task, 'Task Found');
+            if($task->isNotEmpty()){
+                return ResponseFormatter::success($task , 'Task Found');
             }
-            return ResponseFormatter::error(null, 'Task Not Found');
-        };
+            return ResponseFormatter::error('Task Not Found',404);
+        }
 
         return ResponseFormatter::success($taskQuery->paginate($limit), 'Task Found');
 
@@ -73,24 +62,11 @@ class TaskController extends Controller
 
     public function update(UpdateTaskRequest $request, $id){
        
-
+        $id = Hashids::decode($id)[0];
         $task = Task::find($id);
 
         if($task){
-            $task->update([
-             'project_id' => $request->project_id,
-                'name' => $request->name,
-                'description' => $request->description,
-                'priority' => $request->priority,
-                'date_added' => $request->date_added,
-                'start_date' => $request->start_date,
-                'due_date' => $request->due_date,
-                'date_completed' => $request->date_completed,
-                'status' => $request->status,
-                'created_by' => $request->created_by,
-                'assigned_to' => $request->assigned_to,
-            ]
-            );
+            $task->update($request->all());
 
             return ResponseFormatter::success($task, 'Task Updated');
         }
@@ -99,6 +75,7 @@ class TaskController extends Controller
     }
 
     public function delete($id){
+        $id = Hashids::decode($id)[0];
         $task = Task::find($id);
 
         if($task){

@@ -8,25 +8,13 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Requests\CreateFinal_EvaluationRequest;
 use App\Http\Requests\UpdateFinal_EvaluationRequest;
 use Illuminate\Http\Request;
-
+use Vinkla\Hashids\Facades\Hashids;
 
 class Final_EvaluationController extends Controller
 {
     public function create(CreateFinal_EvaluationRequest $request){
 
-        $final_evaluation = Final_Evaluation::create([
-            'user_id' => $request->user_id,
-            'goal_id' => $request->goal_id,
-            'midyear_id' => $request->midyear_id,
-            'final_realization' => $request->final_realization,
-            'final_goal_status' => $request->final_goal_status,
-            'final_employee_score' => $request->final_employee_score,
-            'final_manager_score' => $request->final_manager_score,
-            'final_employee_behavior' => $request->final_employee_behavior,
-            'final_manager_behavior' => $request->final_manager_behavior,
-            'final_manager_comment' => $request->final_manager_comment,
-            'final_employee_comment' => $request->final_employee_comment,
-        ]);
+        $final_evaluation = Final_Evaluation::create($request->all());
        
 
         if($final_evaluation){
@@ -46,24 +34,26 @@ class Final_EvaluationController extends Controller
 
         // get single data
 
-        if($id){
-            $final_evaluation = $final_evaluationQuery->find($id);
+        if($request->has('id')){
+            $id = Hashids::decode($id);
+            $final_evalution = $final_evaluationQuery->where('id', $id)->get();
 
-            if($final_evaluation){
-                return ResponseFormatter::success($final_evaluation, 'Final Evaluation Found');
+            if($final_evalution->isNotEmpty()){
+                return ResponseFormatter::success($final_evalution, 'Final Evaluation Found');
             }
-            return ResponseFormatter::error(null, 'Final Evaluation Not Found');
+            return ResponseFormatter::error('Final Evaluation Not Found',404);
         }
 
 
-        if($user_id){
-           $final_evaluation = $final_evaluationQuery->where('user_id', $user_id)->get();
+        if($request->has('user_id')){
+            $user_id = Hashids::decode($user_id);
+            $final_evalution = $final_evaluationQuery->where('user_id', $user_id)->get();
 
-            if($final_evaluation){
-                return ResponseFormatter::success($final_evaluation, 'Final Evaluation Found');
+            if($final_evalution->isNotEmpty()){
+                return ResponseFormatter::success($final_evalution, 'Final Evaluation Found');
             }
-            return ResponseFormatter::error(null, 'Final Evaluation Not Found');
-        };
+            return ResponseFormatter::error('Final Evaluation Not Found',404);
+        }
 
         return ResponseFormatter::success($final_evaluationQuery->paginate($limit), 'Final Evaluation Found');
 
@@ -72,32 +62,21 @@ class Final_EvaluationController extends Controller
 
     public function update(UpdateFinal_EvaluationRequest $request, $id){
        
-
+        $id = Hashids::decode($id)[0];
         $final_evaluation = Final_Evaluation::find($id);
 
         if($final_evaluation){
-            $final_evaluation->update([
-            'user_id' => $request->user_id,
-            'goal_id' => $request->goal_id,
-            'midyear_id' => $request->midyear_id,
-            'final_realization' => $request->final_realization,
-            'final_goal_status' => $request->final_goal_status,
-            'final_employee_score' => $request->final_employee_score,
-            'final_manager_score' => $request->final_manager_score,
-            'final_employee_behavior' => $request->final_employee_behavior,
-            'final_manager_behavior' => $request->final_manager_behavior,
-            'final_manager_comment' => $request->final_manager_comment,
-            'final_employee_comment' => $request->final_employee_comment,
-            ]
+            $final_evaluation->update($request->all()
             );
 
             return ResponseFormatter::success($final_evaluation, 'Final Evaluation Updated');
         }
 
-        return ResponseFormatter::error(null, 'Final Evaluation Failed to Update');
+        return ResponseFormatter::error('Final Evaluation Failed to Update', 404);
     }
 
     public function delete($id){
+        $id = Hashids::decode($id)[0];
         $final_evaluation = Final_Evaluation::find($id);
 
         if($final_evaluation){
@@ -106,6 +85,6 @@ class Final_EvaluationController extends Controller
             return ResponseFormatter::success($final_evaluation, 'Final Evaluation Deleted');
         }
 
-        return ResponseFormatter::error(null, 'Final Evaluation Failed to Delete');
+        return ResponseFormatter::error('Final Evaluation Failed to Delete',404);
     }
 }

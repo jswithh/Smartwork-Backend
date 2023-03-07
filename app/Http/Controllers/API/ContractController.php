@@ -8,26 +8,20 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Requests\CreateContractRequest;
 use App\Http\Requests\UpdateContractRequest;
 use Illuminate\Http\Request;
-
+use Vinkla\Hashids\Facades\Hashids;
 
 class ContractController extends Controller
 {
     public function create(CreateContractRequest $request){
 
-        $contract = Contract::create([
-            'user_id' => $request->user_id,
-            'employee_type_id' => $request->employee_type_id,
-            'contract_status' => $request->contract_status,
-            'contract_start_date' => $request->contract_start_date,
-            'contract_end_date' => $request->contract_end_date,
-        ]);
+        $contract = Contract::create($request->all());
        
 
         if($contract){
-            return ResponseFormatter::success($contract, 'Career experience Created');
+            return ResponseFormatter::success($contract, 'Contract Created');
         }
 
-        return ResponseFormatter::error(null, 'Career experience Failed to Create');
+        return ResponseFormatter::error(null, 'Contract Failed to Create');
 }
 
     public function fetch(Request $request){
@@ -40,60 +34,62 @@ class ContractController extends Controller
 
         // get single data
 
-        if($id){
-            $contract = $contractQuery->find($id)->with('employee_type');
-
-            if($contract){
-                return ResponseFormatter::success($contract, 'Career experience Found');
+          if($request->has('id')){
+            $id = Hashids::decode($id);
+            if($id !== null){
+               $contract= $contractQuery->where('id', $id)->get();
             }
-            return ResponseFormatter::error(null, 'Career experience Not Found');
+
+            if($contract->isNotEmpty()){
+                return ResponseFormatter::success($contract, 'Contract Found');
+            }
+            return ResponseFormatter::error('Contract Not Found', 404);
         }
 
 
         if($user_id){
-           $contract = $contractQuery->where('user_id', $user_id)->get()->with('employee_type');
+            $user_id = Hashids::decode($user_id);
+           $contract = $contractQuery->where('user_id', $user_id)->get();
 
-            if($contract){
-                return ResponseFormatter::success($contract, 'Career experience Found');
+            if($contract->isNotEmpty()){
+                return ResponseFormatter::success($contract, 'Contract Found');
             }
-            return ResponseFormatter::error(null, 'Career experience Not Found');
+            return ResponseFormatter::error('Contract Not Found',404);
         };
 
-        return ResponseFormatter::success($contractQuery->paginate($limit), 'Career experience Found');
+         return ResponseFormatter::success(
+            $contractQuery->paginate($limit),
+            'Departments found'
+        );
 
         
     }
 
     public function update(UpdateContractRequest $request, $id){
        
-
+        $id = Hashids::decode($id)[0];
         $contract = Contract::find($id);
 
         if($contract){
-            $contract->update([
-            'user_id' => $request->user_id,
-            'employee_type_id' => $request->employee_type_id,
-            'contract_status' => $request->contract_status,
-            'contract_start_date' => $request->contract_start_date,
-            'contract_end_date' => $request->contract_end_date,
-            ]
+            $contract->update($request->all()
             );
 
-            return ResponseFormatter::success($contract, 'Career experience Updated');
+            return ResponseFormatter::success($contract, 'Contract Updated');
         }
 
-        return ResponseFormatter::error(null, 'Career experience Failed to Update');
+        return ResponseFormatter::error(null, 'Contract Failed to Update');
     }
 
     public function delete($id){
+        $id = Hashids::decode($id)[0];
         $contract = Contract::find($id);
 
         if($contract){
             $contract->delete();
 
-            return ResponseFormatter::success($contract, 'Career experience Deleted');
+            return ResponseFormatter::success($contract, 'Contract Deleted');
         }
 
-        return ResponseFormatter::error(null, 'Career experience Failed to Delete');
+        return ResponseFormatter::error(null, 'Contract Failed to Delete');
     }
 }

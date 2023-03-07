@@ -139,7 +139,7 @@ class User extends Authenticatable
     }
 
     public function career_experience(){
-        return $this->hasMany(Career_Experience::class);
+        return $this->hasMany(Career_experience::class);
     }
 
     

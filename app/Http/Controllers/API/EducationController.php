@@ -8,22 +8,14 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Requests\CreateEducationRequest;
 use App\Http\Requests\UpdateEducationRequest;
 use Illuminate\Http\Request;
+use Vinkla\Hashids\Facades\Hashids;
 
 
 class EducationController extends Controller
 {
     public function create(CreateEducationRequest $request){
 
-        $education = Education::create([
-            'user_id' => $request->user_id,
-            'institution_name' => $request->institution_name,
-            'degree' => $request->degree,
-            'field_of_study' => $request->field_of_study,
-            'grade' => $request->grade,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'activities_and_societies' => $request->activities_and_societies,
-        ]);
+        $education = Education::create($request->all());
        
 
         if($education){
@@ -43,24 +35,29 @@ class EducationController extends Controller
 
         // get single data
 
-        if($id){
-            $education = $educationQuery->find($id);
+         if($request->has('id')){
+            $id = Hashids::decode($id);
+            if($id !== null){
+               $education= $educationQuery->where('id', $id)->get();
+            }
 
-            if($education){
+            if($education->isNotEmpty()){
                 return ResponseFormatter::success($education, 'Education Found');
             }
-            return ResponseFormatter::error(null, 'Education Not Found');
+            return ResponseFormatter::error('Education Not Found',404);
         }
 
+             if($request->has('user_id')){
+            $user_id = Hashids::decode($user_id);
+            if($user_id !== null){
+               $education= $educationQuery->where('user_id', $user_id)->get();
+            }
 
-        if($user_id){
-           $education = $educationQuery->where('user_id', $user_id)->get();
-
-            if($education){
+            if($education->isNotEmpty()){
                 return ResponseFormatter::success($education, 'Education Found');
             }
-            return ResponseFormatter::error(null, 'Education Not Found');
-        };
+            return ResponseFormatter::error('Education Not Found',404);
+        }
 
         return ResponseFormatter::success($educationQuery->paginate($limit), 'Education Found');
 
@@ -69,20 +66,11 @@ class EducationController extends Controller
 
     public function update(UpdateEducationRequest $request, $id){
        
-
+        $id = Hashids::decode($id)[0];
         $education = Education::find($id);
 
         if($education){
-            $education->update([
-            'user_id' => $request->user_id,
-            'institution_name' => $request->institution_name,
-            'degree' => $request->degree,
-            'field_of_study' => $request->field_of_study,
-            'grade' => $request->grade,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'activities_and_societies' => $request->activities_and_societies,
-            ]
+            $education->update($request->all()
             );
 
             return ResponseFormatter::success($education, 'Education Updated');
@@ -92,6 +80,7 @@ class EducationController extends Controller
     }
 
     public function delete($id){
+        $id = Hashids::decode($id)[0];
         $education = Education::find($id);
 
         if($education){

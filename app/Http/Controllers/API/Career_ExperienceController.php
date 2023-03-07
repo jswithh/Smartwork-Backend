@@ -8,22 +8,12 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Requests\CreateCareer_experienceRequest;
 use App\Http\Requests\UpdateCareer_experienceRequest;
 use Illuminate\Http\Request;
-
-
+use Vinkla\Hashids\Facades\Hashids;
 class Career_ExperienceController extends Controller
 {
     public function create(CreateCareer_experienceRequest $request){
 
-        $career_experience = Career_experience::create([
-            'user_id' => $request->user_id,
-            'company_name' => $request->company_name,
-            'location' => $request->location,
-            'job_title' => $request->job_title,
-            'employee_type_id' => $request->employee_type_id,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'job_description' => $request->job_description,
-        ]);
+        $career_experience = Career_experience::create($request->all());
        
 
         if($career_experience){
@@ -43,46 +33,44 @@ class Career_ExperienceController extends Controller
 
         // get single data
 
-        if($id){
-            $career_experience = $career_experienceQuery->find($id)->with('employee_type');
+        if($request->has('id')){
+            $id = Hashids::decode($id);
+            if($id !== null){
+               $career_experience= $career_experienceQuery->where('id', $id)->get();
+            }
 
-            if($career_experience){
+            if($career_experience->isNotEmpty()){
                 return ResponseFormatter::success($career_experience, 'Career experience Found');
             }
-            return ResponseFormatter::error(null, 'Career experience Not Found');
+            return ResponseFormatter::error('Career experience Not Found', 404);
         }
 
 
-        if($user_id){
-           $career_experience = $career_experienceQuery->where('user_id', $user_id)->get();
+      if($request->has('user_id')){
+            $user_id = Hashids::decode($user_id);
+            if($user_id !== null){
+               $career_experience= $career_experienceQuery->where('user_id', $user_id)->get();
+            }
 
-            if($career_experience){
+            if($career_experience->isNotEmpty()){
                 return ResponseFormatter::success($career_experience, 'Career experience Found');
             }
-            return ResponseFormatter::error(null, 'Career experience Not Found');
-        };
+            return ResponseFormatter::error('Career experience Not Found', 404);
+        }
 
-        return ResponseFormatter::success($career_experienceQuery->paginate($limit), 'Career experience Found');
+        return ResponseFormatter::success($career_experienceQuery->paginate($limit), 'Career experience List');
 
         
     }
 
     public function update(UpdateCareer_experienceRequest $request, $id){
-       
 
+       
+        $id = Hashids::decode($id)[0];
         $career_experience = Career_experience::find($id);
 
         if($career_experience){
-            $career_experience->update([
-            'user_id' => $request->user_id,
-            'company_name' => $request->company_name,
-            'location' => $request->location,
-            'job_title' => $request->job_title,
-            'employee_type_id' => $request->employee_type_id,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'job_description' => $request->job_description,
-            ]
+            $career_experience->update($request->all()
             );
 
             return ResponseFormatter::success($career_experience, 'Career experience Updated');
@@ -92,6 +80,7 @@ class Career_ExperienceController extends Controller
     }
 
     public function delete($id){
+        $id = Hashids::decode($id)[0];
         $career_experience = Career_experience::find($id);
 
         if($career_experience){
@@ -100,6 +89,6 @@ class Career_ExperienceController extends Controller
             return ResponseFormatter::success($career_experience, 'Career experience Deleted');
         }
 
-        return ResponseFormatter::error(null, 'Career experience Failed to Delete');
+        return ResponseFormatter::error('Career experience Failed to Delete',404);
     }
 }

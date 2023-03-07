@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 Use App\Models\Job_Level;
 use App\Helpers\ResponseFormatter;
-
+use Vinkla\Hashids\Facades\Hashids;
 
 class Job_LevelController extends Controller
 {
@@ -26,14 +26,21 @@ class Job_LevelController extends Controller
         return ResponseFormatter::error(null, 'Job Level Failed to Create');
 }
 
-    public function fetch(){
-        $job_level = Job_Level::all();
+    public function fetch(Request $request){
+        $id = $request->input('id');
+        $limit = $request->input('limit', 10);
+        $job_level = Job_Level::query();
 
-        if($job_level){
-            return ResponseFormatter::success($job_level, 'Job Level Fetched');
+        if($request->has('id')){
+            $id = Hashids::decode($id);
+            $job_level = $job_level->where('id', $id)->get();
+
+            if($job_level->isNotEmpty()){
+                return ResponseFormatter::success($job_level, 'Job Level Found');
+            }
+            return ResponseFormatter::error('Job Level Not Found',404);
         }
-
-        return ResponseFormatter::error(null, 'Job Level Failed to Fetch');
+        return ResponseFormatter::success($job_level->paginate($limit), 'Job Level Fetched');
     }
 
     public function update(Request $request, $id){
@@ -41,6 +48,7 @@ class Job_LevelController extends Controller
             'name' => ['required', 'string', 'max:50'],
         ]);
 
+        $id = Hashids::decode($id)[0];
         $job_level = Job_Level::find($id);
 
         if($job_level){
@@ -54,6 +62,7 @@ class Job_LevelController extends Controller
     }
 
     public function delete($id){
+        $id = Hashids::decode($id)[0];
         $job_level = Job_Level::find($id);
 
         if($job_level){

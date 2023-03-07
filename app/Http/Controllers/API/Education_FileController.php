@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateEducationFileRequest;
 use Illuminate\Http\Request;
 use App\Models\Education_File;
+use Vinkla\Hashids\Facades\Hashids;
 
 class Education_FileController extends Controller
 {
@@ -33,30 +34,35 @@ class Education_FileController extends Controller
     public function fetch(Request $request){
 
         try {
-            $id = $request->id;
-            $education_id = $request->education_id;
+            $id = $request->input('id');
+            $education_id = $request->input('education_id');
             
-            $education_files = Education_File::query();
+            $education_filesQuery = Education_File::query();
 
-            if($id){
-                $files = $education_files->find($id);
-
-                if($files){
-                    return ResponseFormatter::success($files, 'File Found');
-                }
-                return ResponseFormatter::error(null,'File not found');
+              if($request->has('id')){
+                $id = Hashids::decode($id);
+            if($id !== null){
+               $education_files = $education_filesQuery->where('id', $id)->get();
             }
 
-            if($education_id){
-                $files = $education_files->where('education_id', $education_id)->get();
+            if($education_files->isNotEmpty()){
+                return ResponseFormatter::success($education_files, 'Education file Found');
+            }
+            return ResponseFormatter::error('Education file Not Found', 404);
+        }
 
-                if($files){
-                    return ResponseFormatter::success($files, 'File Found');
-                }
-                return ResponseFormatter::error(null,'File not found');
+        if($request->has('education_id')){
+                $education_id = Hashids::decode($education_id);
+            if($education_id !== null){
+               $education_files = $education_filesQuery->where('education_id', $education_id)->get();
             }
 
-            return ResponseFormatter::success($education_files, 'File Found');
+            if($education_files->isNotEmpty()){
+                return ResponseFormatter::success($education_files, 'Education file Found');
+            }
+            return ResponseFormatter::error('Education file Not Found',404);
+        }
+            return ResponseFormatter::success($education_filesQuery->get(), 'File Found');
 
         } catch (\Throwable $th) {
             return ResponseFormatter::error($th->getMessage());
@@ -65,6 +71,7 @@ class Education_FileController extends Controller
 
     public function delete($id){
         try {
+            $id = Hashids::decode($id)[0];
             $education_file = Education_File::find($id);
 
             if($education_file){

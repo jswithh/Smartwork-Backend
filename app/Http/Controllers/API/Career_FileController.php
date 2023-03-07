@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCareerFileRequest;
 use Illuminate\Http\Request;
 use App\Models\Career_File;
+use Vinkla\Hashids\Facades\Hashids;
+
 
 class Career_FileController extends Controller
 {
@@ -33,30 +35,37 @@ class Career_FileController extends Controller
     public function fetch(Request $request){
 
         try {
-            $id = $request->id;
-            $career_experience_id = $request->career_experience_id;
+            $id = $request->input('id');
+            $career_experience_id = $request->input('career_experience_id');
+            $career_filesQuery = Career_File::query()->get();
+
             
-            $career_files = Career_File::query();
-
-            if($id){
-                $files = $career_files->find($id);
-
-                if($files){
-                    return ResponseFormatter::success($files, 'File Found');
-                }
-                return ResponseFormatter::error(null,'File not found');
+        if($request->has('id')){
+            $id = Hashids::decode($id);
+           
+            if($id !== null){
+               $career_files = $career_filesQuery->find($id);
             }
 
-            if($career_experience_id){
-                $files = $career_files->where('career_experience_id', $career_experience_id)->get();
+            if($career_files->isNotEmpty()){
+                return ResponseFormatter::success($career_files, 'Career File Found');
+            }
+            return ResponseFormatter::error('Career File Not Found',404);
+        }
 
-                if($files){
-                    return ResponseFormatter::success($files, 'File Found');
-                }
-                return ResponseFormatter::error(null,'File not found');
+           if($request->has('career_experience_id')){
+            $career_experience_id = Hashids::decode($career_experience_id)[0];
+           
+            if($career_experience_id !== null){
+               $career_files = $career_filesQuery->where('career_experience_id', $career_experience_id);
             }
 
-            return ResponseFormatter::success($career_files, 'File Found');
+            if($career_files->isNotEmpty()){
+                return ResponseFormatter::success($career_files, 'Career File Found');
+            }
+            return ResponseFormatter::error('Career File Not Found',404);
+        }
+            return ResponseFormatter::success($career_filesQuery, 'File Found');
 
         } catch (\Throwable $th) {
             return ResponseFormatter::error($th->getMessage());
@@ -65,13 +74,14 @@ class Career_FileController extends Controller
 
     public function delete($id){
         try {
+            $id = Hashids::decode($id)[0];
             $career_file = Career_File::find($id);
 
             if($career_file){
                 $career_file->delete();
                 return ResponseFormatter::success($career_file, 'File Deleted');
             }
-            return ResponseFormatter::error(null, 'File not found');
+            return ResponseFormatter::error('File not found',404);
         } catch (\Throwable $th) {
             return ResponseFormatter::error($th->getMessage());
         }

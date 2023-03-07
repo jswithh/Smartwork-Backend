@@ -8,24 +8,13 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Requests\CreateLeaveRequest;
 use App\Http\Requests\UpdateLeaveRequest;
 use Illuminate\Http\Request;
-
+use Vinkla\Hashids\Facades\Hashids;
 
 class LeaveController extends Controller
 {
     public function create(CreateLeaveRequest $request){
 
-        $leave = Leave::create([
-            'user_id' => $request->user_id,
-            'approver_id' => $request->approver_id,
-            'handover_id' => $request->handover_id,
-            'subject' => $request->subject,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'reason' => $request->reason,
-            'number_of_days' => $request->number_of_days,
-            'leave_type' => $request->leave_type,
-            'status' => $request->status,
-        ]);
+        $leave = Leave::create($request->all());
        
 
         if($leave){
@@ -45,57 +34,55 @@ class LeaveController extends Controller
 
         // get single data
 
-        if($id){
-            $leave = $leaveQuery->find($id);
+       if($request->has('id')){
+            $id = Hashids::decode($id);
+            $leave = $leaveQuery->where('id', $id)->get();
 
-            if($leave){
+            if($leave->isNotEmpty()){
                 return ResponseFormatter::success($leave, 'Leave Found');
             }
-            return ResponseFormatter::error(null, 'Leave Not Found');
+            return ResponseFormatter::error('Leave Not Found',404);
         }
 
 
-        if($user_id){
-           $leave = $leaveQuery->where('user_id', $user_id)->get();
+        if($request->has('user_id')){
+            $user_id = Hashids::decode($user_id);
+            $leave = $leaveQuery->where('user_id', $user_id)->get();
 
-            if($leave){
+            if($leave->isNotEmpty()){
                 return ResponseFormatter::success($leave, 'Leave Found');
             }
-            return ResponseFormatter::error(null, 'Leave Not Found');
-        };
+            return ResponseFormatter::error('Leave Not Found',404);
+        }
 
-        return ResponseFormatter::success($leaveQuery->paginate($limit), 'Leave Found');
+        $leave = $leaveQuery->paginate($limit);
+
+        if($leave->isNotEmpty()){
+            return ResponseFormatter::success($leave, 'Leave Found');
+        };
+        
+        return ResponseFormatter::error('Leave Not Found', 404);
 
         
     }
 
     public function update(UpdateLeaveRequest $request, $id){
        
-
+        $id = Hashids::decode($id)[0];
         $leave = Leave::find($id);
 
         if($leave){
-            $leave->update([
-            'user_id' => $request->user_id,
-            'approver_id' => $request->approver_id,
-            'handover_id' => $request->handover_id,
-            'subject' => $request->subject,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'reason' => $request->reason,
-            'number_of_days' => $request->number_of_days,
-            'leave_type' => $request->leave_type,
-            'status' => $request->status,
-            ]
+            $leave->update($request->all()
             );
 
             return ResponseFormatter::success($leave, 'Leave Updated');
         }
 
-        return ResponseFormatter::error(null, 'Leave Failed to Update');
+        return ResponseFormatter::error('Leave Failed to Update', 404);
     }
 
     public function delete($id){
+        $id = Hashids::decode($id)[0];
         $leave = Leave::find($id);
 
         if($leave){
