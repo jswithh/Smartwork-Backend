@@ -117,7 +117,6 @@ class User extends Authenticatable
     public function attendance(){
         return $this->hasMany(Attendance::class);
     }
-
     public function goal(){
         return $this->hasMany(Goal::class);
     }

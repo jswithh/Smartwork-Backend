@@ -88,7 +88,7 @@ class UserController extends Controller
     'User_File', 
     'salary', 
     'education.Education_file',
-    'users.career_file',
+    'career_experience.career_file',
     'contract',
     'insurance',
 ])->findOrFail($request->user()->id);
