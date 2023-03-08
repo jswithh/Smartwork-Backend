@@ -45,7 +45,7 @@ class CreateUserRequest extends FormRequest
                 'place_of_identity' => ['nullable', 'string' ],
                 'branch' => ['nullable', 'string' ],
                 'department_id' => ['required', 'integer' ],
-                'team_id' => ['required', 'string' ],
+                'team_id' => ['required', 'integer' ],
                 'job_level' => ['nullable', 'string' ],
                 'employee_type' => ['nullable', 'string' ],
                 'profile_photo_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
