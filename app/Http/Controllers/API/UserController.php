@@ -26,6 +26,9 @@ class UserController extends Controller
 
             // Find user by email
             $user = User::where('email', $request->email)->firstOrFail();
+            // fetch all user permission
+            $user->getAllPermissions();
+
             if (!Hash::check($request->password, $user->password)) {
                 throw new Exception('Invalid password');
             }
@@ -37,7 +40,8 @@ class UserController extends Controller
             return ResponseFormatter::success([
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer',
-                'user' => $user
+                'user' => $user,
+                // 'permission' => $permission
             ], 'Login success');
         } catch (Exception $e) {
             return ResponseFormatter::error($e->getMessage());
