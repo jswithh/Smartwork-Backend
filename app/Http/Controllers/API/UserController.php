@@ -53,7 +53,11 @@ class UserController extends Controller
             }
 
             // Create user
-            $user = User::create($request->all());
+            $data = $request->all();
+            $data['password'] = Hash::make($request->password);
+            $data['profile_photo_path'] = $path;
+    
+            $user = User::create($data);
 
             // Generate token
             $tokenResult = $user->createToken('authToken')->plainTextToken;
@@ -108,7 +112,7 @@ class UserController extends Controller
         $limit = $request->input('limit', 10);
         $user = User::query();
 
-        $userQuery = $user->where('is_active', 1)->with(['department', 'team', 'user_file'])->paginate($limit);
+        $userQuery = $user->with(['department', 'team', 'user_file'])->paginate($limit);
 
         if($request->has('id')){
             $id = Hashids::decode($id);
