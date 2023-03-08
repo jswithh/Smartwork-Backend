@@ -118,10 +118,6 @@ class User extends Authenticatable
         return $this->hasMany(Attendance::class);
     }
 
-    public function user(){
-        return $this->hasMany(User::class);
-    }
-
     public function goal(){
         return $this->hasMany(Goal::class);
     }
