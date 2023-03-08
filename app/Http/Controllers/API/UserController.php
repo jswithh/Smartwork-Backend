@@ -25,9 +25,21 @@ class UserController extends Controller
             ]);
 
             // Find user by email
-            $user = User::where('email', $request->email)->firstOrFail();
+            $user = User::where('email', $request->email)->with(
+                [
+                    'department', 
+                    'team', 
+                    'User_File', 
+                    'salary', 
+                    'education.Education_file',
+                    'career_experience.career_file',
+                    'contract',
+                    'insurance',
+                ]
+            )->firstOrFail();
             // fetch all user permission
             $user->getAllPermissions();
+           
 
             if (!Hash::check($request->password, $user->password)) {
                 throw new Exception('Invalid password');
