@@ -12,11 +12,13 @@ class Employee_TypeController extends Controller
 {
     public function create(Request $request){
         $request->validate([
-            'name' => ['required', 'string', 'max:50'],
+            'name' => ['required', 'string', 'max:255'],
+            'code' => ['required', 'string', 'max:255'],
         ]);
 
         $employee_type = Employee_Type::create([
             'name' => $request->name,
+            'code' => $request->code,
         ]);
 
         if($employee_type){
@@ -49,14 +51,16 @@ class Employee_TypeController extends Controller
 
     public function update(Request $request, $id){
         $request->validate([
-            'name' => ['required', 'string', 'max:50'],
+            'name' => ['nullable', 'string', 'max:255'],
+            'code' => ['nullable', 'string', 'max:255'],
+
         ]);
         $id = Hashids::decode($id)[0];
         $employee_type = Employee_Type::find($id);
 
         if($employee_type){
-            $employee_type->name = $request->name;
-            $employee_type->save();
+           
+            $employee_type->update($request->all());
 
             return ResponseFormatter::success($employee_type, 'Job Level Updated');
         }

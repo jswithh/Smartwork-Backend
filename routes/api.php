@@ -24,6 +24,7 @@ use App\Http\Controllers\API\Education_FileController;
 use App\Http\Controllers\API\Career_FileController;
 use App\Http\Controllers\API\LeaveController;
 use App\Http\Controllers\API\RoleController;
+use App\Http\Controllers\API\BranchController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -378,5 +379,22 @@ Route::prefix('teams')->group(function () {
     });
     Route::middleware('auth:sanctum')->group(function () {
         Route::middleware('permission:delete team')->delete("delete/{id}", [TeamController::class, "delete"])->name("delete");
+    });
+});
+
+// Branch Routes
+
+Route::prefix('branches')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->get("fetch", [BranchController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->post("create", [BranchController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->post("update/{id}", [BranchController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->delete("delete/{id}", [BranchController::class, "delete"])->name("delete");
     });
 });
