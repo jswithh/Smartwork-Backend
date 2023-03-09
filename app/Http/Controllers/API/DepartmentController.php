@@ -21,7 +21,7 @@ class DepartmentController extends Controller
         $limit = $request->input('limit', 10);
         $with_responsibilities = $request->input('with_responsibilities', false);
 
-        $departmentQuery = Department::query()->with('sub_departments');
+        $departmentQuery = Department::query()->with(['sub_departments', 'team']);
 
         // Get single data
         if($request->has('id')){
