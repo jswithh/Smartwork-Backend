@@ -30,7 +30,7 @@ class GoalController extends Controller
         $limit = $request->input('limit', 10);
 
         // get multiple data
-        $goalQuery = Goal::query();
+        $goalQuery = Goal::query()->with('user');
 
         // get single data
 
