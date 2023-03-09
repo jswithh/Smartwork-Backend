@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Vinkla\Hashids\Facades\Hashids;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WelcomeMail;
-
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -128,69 +128,58 @@ class UserController extends Controller
         return ResponseFormatter::success($user, 'Fetch success');
     }
     
-    public function getAll(Request $request)
-    {
-        
-        $id = $request->input('id');
-        $name = $request->input('name');
-        $department_id = $request->input('department_id');
-        $team_id = $request->input('team_id');
-        $limit = $request->input('limit', 10);
-        $user = User::query();
+   public function getAll(Request $request)
+{
+    $id = $request->input('id');
+    $name = $request->input('name');
+    $department_id = $request->input('department_id');
+    $team_id = $request->input('team_id');
+    $limit = $request->input('limit', 10);
+    
+    $users = User::query();
 
-        $userQuery = $user->with(['department', 'team', 'user_file'])->paginate($limit);
-
-        if($request->has('id')){
-            $id = Hashids::decode($id);
-            if($id !== null){
-               $users = $user->where('id', $id)->with(['department', 'team', 'user_file'])->get();
-            }
-
-            if(!$users->isEmpty()){
-                return ResponseFormatter::success($users, 'Data user berhasil diambil');
-            }                
-             return ResponseFormatter::error('User tidak ditemukan', 404);
+    if($request->has('id')){
+        $id = Hashids::decode($id);
+        if($id !== null){
+           $users->where('id', $id);
+        } else {
+            return ResponseFormatter::error('User tidak ditemukan', 404);
         }
-
-
-        if($name){
-            $userQuery = User::where('name', 'like', '%'.$name.'%')->with(['department', 'team', 'user_file'])->get();
-
-            if(!$userQuery->isEmpty()){
-                return ResponseFormatter::success($userQuery, 'Data user berhasil diambil');
-            }
-            return ResponseFormatter::error('Employee not found', 404);
-        }
-
-       if($request->has('team_id')){
-            $team_id = Hashids::decode($team_id);
-            if($team_id !== null){
-               $users = $user->where('team_id', $team_id)->with(['department', 'team', 'user_file'])->get();
-            }
-
-            if(!$users->isEmpty()){
-                return ResponseFormatter::success($users, 'Data user berhasil diambil');
-            }                
-             return ResponseFormatter::error('User tidak ditemukan', 404);
-        }
-
-        if($request->has('department_id')){
-            $department_id = Hashids::decode($department_id);
-            if($department_id !== null){
-               $users = $user->where('department_id', $department_id)->with(['department', 'team', 'user_file'])->get();
-            }
-
-            if(!$users->isEmpty()){
-                return ResponseFormatter::success($users, 'Data user berhasil diambil');
-            }                
-             return ResponseFormatter::error('User tidak ditemukan', 404);
-        }
-
-        return ResponseFormatter::success(
-            $userQuery,
-            'Employees found'
-        );
     }
+
+    if($name){
+        $users->where('name', 'like', '%'.$name.'%');
+    }
+
+    if($request->has('team_id')){
+        $team_id = Hashids::decode($team_id);
+        if($team_id !== null){
+           $users->where('team_id', $team_id);
+        } else {
+            return ResponseFormatter::error('User tidak ditemukan', 404);
+        }
+    }
+
+    if($request->has('department_id')){
+        $department_id = Hashids::decode($department_id);
+        if($department_id !== null){
+           $users->where('department_id', $department_id);
+        } else {
+            return ResponseFormatter::error('User tidak ditemukan', 404);
+        }
+    }
+
+    $users = $users->with(['department', 'team', 'user_file'])->paginate($limit);
+    
+    // Hitung age dan tambahkan pada setiap item user
+    $users->getCollection()->transform(function($user) {
+        $user['age'] = Carbon::parse($user['birthday'])->age;
+        return $user;
+    });
+
+    return ResponseFormatter::success($users, 'Data user berhasil diambil');
+}
+
 
     public function delete($id){
         $id = Hashids::decode($id)[0];

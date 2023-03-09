@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
+
 {
     use HasApiTokens;
     use HasFactory;
@@ -54,6 +56,8 @@ class User extends Authenticatable
         'is_active',
     ];
 
+    
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -82,9 +86,9 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $appends = [
-        'profile_photo_url',
-    ];
+    // protected $appends = [
+    //     'profile_photo_url',
+    // ];
 
      public function team(){
         return $this->belongsTo(Team::class);
@@ -137,5 +141,11 @@ class User extends Authenticatable
         return $this->hasMany(Career_experience::class);
     }
 
-    
+    public function age(){
+    if (isset($this->attributes['birthday'])) {
+        return Carbon::parse($this->attributes['birthday'])->age;
+    }
+    return null;
+}
+
 }
