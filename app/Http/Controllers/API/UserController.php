@@ -67,13 +67,14 @@ class UserController extends Controller
             if($request->file('profile_photo_path')){
                  $path = url('/').'/storage/profile_photo_path/' . $request->file('profile_photo_path')->hashName();
                  $request->file('profile_photo_path')->store('public/profile_photo_path');
+                 $data['profile_photo_path'] = $path;
             }
 
             // Create user
             $data = $request->all();
             // make ternary operator for password
             $data['password'] = Hash::make('Smartwork123#');
-            if($data['profile_photo_path']->isEmpty()){
+            if(!$request->file('profile_photo_path')){
                 $data['profile_photo_path'] = 'https://ui-avatars.com/api/?name='.$data['name'].'&color=7F9CF5&background=EBF4FF';
             };
     
