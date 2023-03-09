@@ -11,6 +11,8 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Vinkla\Hashids\Facades\Hashids;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WelcomeMail;
 
 
 class UserController extends Controller
@@ -53,7 +55,6 @@ class UserController extends Controller
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer',
                 'user' => $user,
-                // 'permission' => $permission
             ], 'Login success');
         } catch (Exception $e) {
             return ResponseFormatter::error($e->getMessage());
@@ -70,13 +71,19 @@ class UserController extends Controller
 
             // Create user
             $data = $request->all();
-            $data['password'] = Hash::make($request->password);
+            // make ternary operator for password
+            $data['password'] = Hash::make('Smartwork123#');
             $data['profile_photo_path'] = $path;
     
             $user = User::create($data);
 
             // Generate token
             $tokenResult = $user->createToken('authToken')->plainTextToken;
+
+            // Send email
+            $email = $data['email'];
+            $password = 'Smartwork123#';
+            Mail::to($email)->send(new WelcomeMail($email, $password));
 
             // Return response
             return ResponseFormatter::success([

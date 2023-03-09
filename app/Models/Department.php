@@ -27,4 +27,8 @@ class Department extends Model
     public function responsibilities(){
         return $this->hasMany(Responsibility::class);
     }
+
+    public function sub_departments(){
+        return $this->hasMany(Department::class, 'parent');
+    }
 }
