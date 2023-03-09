@@ -73,7 +73,9 @@ class UserController extends Controller
             $data = $request->all();
             // make ternary operator for password
             $data['password'] = Hash::make('Smartwork123#');
-            $data['profile_photo_path'] = $path;
+            if($data['profile_photo_path'] == null){
+                $data['profile_photo_path'] = 'https://ui-avatars.com/api/?name='.$data['name'].'&color=7F9CF5&background=EBF4FF';
+            };
     
             $user = User::create($data);
 
