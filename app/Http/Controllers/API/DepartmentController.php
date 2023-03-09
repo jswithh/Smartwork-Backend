@@ -34,7 +34,7 @@ class DepartmentController extends Controller
             if($department->isNotEmpty()){
                 return ResponseFormatter::success($department, $encode);
             }
-            return ResponseFormatter::error('Career experience Not Found', 404);
+            return ResponseFormatter::error('Department Not Found', 404);
         }
 
         // Get multiple data
