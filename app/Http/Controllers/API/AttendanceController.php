@@ -12,7 +12,8 @@ use Vinkla\Hashids\Facades\Hashids;
 
 class AttendanceController extends Controller
 {
-    public function fetchByUser(){
+    public function fetchByUser()
+    {
 
         // smartwork.id/api/attendance/fetch
         $user = Auth::user();
@@ -22,7 +23,8 @@ class AttendanceController extends Controller
             'Data Absensi berhasil diambil'
         );
     }
-    public function fetchAll(Request $request){
+    public function fetchAll(Request $request)
+    {
         // smartwork.id/api/attendance/fetch-all
         $id = $request->input('id');
         $user_id = $request->input('user_id');
@@ -31,46 +33,48 @@ class AttendanceController extends Controller
         $department_id = $request->input('department_id');
         $limit = $request->input('limit', 10);
 
-        $attendance = Attendance::query();
+        $attendance = Attendance::query()->with('user');
 
-        if($id){
+        if ($id) {
             $id = Hashids::decode($id);
             $attendance->where('id', $id);
         }
 
-        if($user_id){
+        if ($user_id) {
             $user_id = Hashids::decode($user_id);
             $attendance->where('user_id', $user_id);
         }
 
-        if($month){
+        if ($month) {
             $attendance->whereMonth('created_at', $month);
         }
 
-        if($year){
+        if ($year) {
             $attendance->whereYear('created_at', $year);
         }
 
-        if($department_id){
+        if ($department_id) {
             $department_id = Hashids::decode($department_id);
-            $attendance->whereHas('user', function($user) use ($department_id){
+            $attendance->whereHas('user', function ($user) use ($department_id) {
                 $user->where('department_id', $department_id);
             });
         }
-        
+
         return ResponseFormatter::success(
             $attendance->paginate($limit),
             'Data Absensi berhasil diambil'
         );
     }
 
-     public function update(UpdateAttendanceRequest $request, $id){
-       
+    public function update(UpdateAttendanceRequest $request, $id)
+    {
+
         $id = Hashids::decode($id)[0];
         $attendance = Attendance::find($id);
 
-        if($attendance){
-            $attendance->update($request->all()
+        if ($attendance) {
+            $attendance->update(
+                $request->all()
             );
 
             return ResponseFormatter::success($attendance, 'Attendance Updated');
@@ -79,11 +83,12 @@ class AttendanceController extends Controller
         return ResponseFormatter::error(null, 'Attendance Failed to Update');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $id = Hashids::decode($id)[0];
         $attendance = Attendance::find($id);
 
-        if($attendance){
+        if ($attendance) {
             $attendance->delete();
 
             return ResponseFormatter::success($attendance, 'Attendance Deleted');
@@ -91,5 +96,4 @@ class AttendanceController extends Controller
 
         return ResponseFormatter::error(null, 'Attendance Failed to Delete');
     }
-    
 }
