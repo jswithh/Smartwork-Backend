@@ -267,17 +267,17 @@ Route::prefix('leaves')->group(function () {
 
 // Midyear Evaluation Routes
 
-Route::prefix('midyear_evaluations')->group(function(){
-    Route::middleware('auth:sanctum')->group(function(){
+Route::prefix('midyear_evaluations')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
         Route::middleware('permission:read midyear evaluation')->get("fetch", [Midyear_EvaluationController::class, "fetch"])->name("fetch");
     });
-    Route::middleware('auth:sanctum')->group(function(){
+    Route::middleware('auth:sanctum')->group(function () {
         Route::middleware('permission:create midyear evaluation')->post("create", [Midyear_EvaluationController::class, "create"])->name("create");
     });
-    Route::middleware('auth:sanctum')->group(function(){
+    Route::middleware('auth:sanctum')->group(function () {
         Route::middleware('permission:update midyear evaluation')->post("update/{id}", [Midyear_EvaluationController::class, "update"])->name("update");
     });
-    Route::middleware('auth:sanctum')->group(function(){
+    Route::middleware('auth:sanctum')->group(function () {
         Route::middleware('permission:delete midyear evaluation')->delete("delete/{id}", [Midyear_EvaluationController::class, "delete"])->name("delete");
     });
 });
@@ -405,7 +405,7 @@ Route::prefix('branches')->group(function () {
 
 Route::prefix('reminder-types')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
-        Route::middleware('role:admin')->get("fetch", [Reminder_TypeController::class, "fetch"])->name("fetch");
+        Route::get("fetch", [Reminder_TypeController::class, "fetch"])->name("fetch");
     });
     Route::middleware('auth:sanctum')->group(function () {
         Route::middleware('role:admin')->post("create", [Reminder_TypeController::class, "create"])->name("create");
@@ -425,12 +425,12 @@ Route::prefix('reminders')->group(function () {
         Route::middleware('role:admin')->get("fetch", [ReminderController::class, "fetch"])->name("fetch");
     });
     Route::middleware('auth:sanctum')->group(function () {
-        Route::middleware('role:admin')->post("create", [ReminderController::class, "create"])->name("create");
+        Route::post("create", [ReminderController::class, "create"])->name("create");
     });
     Route::middleware('auth:sanctum')->group(function () {
-        Route::middleware('role:admin')->post("update/{id}", [ReminderController::class, "update"])->name("update");
+        Route::post("update/{id}", [ReminderController::class, "update"])->name("update");
     });
     Route::middleware('auth:sanctum')->group(function () {
-        Route::middleware('role:admin')->delete("delete/{id}", [ReminderController::class, "delete"])->name("delete");
+        Route::delete("delete/{id}", [ReminderController::class, "delete"])->name("delete");
     });
 });
