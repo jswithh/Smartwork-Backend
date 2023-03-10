@@ -17,22 +17,17 @@ class ReminderController extends Controller
 {
     public function create(CreateReminderRequest $request)
     {
-
-
         $data = $request->all();
         $reminder = Reminder::create($data);
-        $reminderQuery = $reminder->with('reminder_type', 'created_by', 'assigned_to')->first();
-        $assignedTo = User::find($reminder->assigned_to);
-        $email = $assignedTo->email;
-
-        Mail::to($email)->send(new ReminderMail($reminder));
-        if ($reminder) {
-            return ResponseFormatter::success($reminder, 'Reminder Created');
+        $assignedToIds = is_array($data['assigned_to']) ? $data['assigned_to'] : explode(',', $data['assigned_to']);
+        $assignedTos = User::whereIn('id', $assignedToIds)->get()->pluck('email');
+        foreach ($assignedTos as $email) {
+            if (!Mail::to($email)->send(new ReminderMail($reminder))) {
+                return ResponseFormatter::error('Reminder Failed to Create and Send Emails', 404);
+            }
         }
-
-        return ResponseFormatter::error('Reminder Failed to Create', 404);
+        return ResponseFormatter::success($reminder, 'Reminder Created and Emails Sent');
     }
-
     public function fetch(Request $request)
     {
         $id = $request->input('id');

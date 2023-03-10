@@ -27,7 +27,7 @@ class UpdateReminderRequest extends FormRequest
         return [
             'reminder_type_id' => 'nullable|integer|exists:reminder_types,id',
             'created_by' => 'nullable|integer|exists:users,id',
-            'assigned_to' => 'nullable|integer|exists:users,id',
+            'assigned_to' => 'nullable|string|exists:users,id',
             'subject' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:255',
             'date_added' => 'nullable|date',

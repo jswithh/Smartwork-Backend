@@ -27,7 +27,7 @@ class CreateReminderRequest extends FormRequest
         return [
             'reminder_type_id' => 'required|integer|exists:reminder_types,id',
             'created_by' => 'required|integer|exists:users,id',
-            'assigned_to' => 'required|integer|exists:users,id',
+            'assigned_to' => 'required|string|exists:users,id',
             'subject' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'date_added' => 'required|date',
