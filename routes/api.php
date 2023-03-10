@@ -25,6 +25,8 @@ use App\Http\Controllers\API\Career_FileController;
 use App\Http\Controllers\API\LeaveController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\BranchController;
+use App\Http\Controllers\API\Reminder_TypeController;
+use App\Http\Controllers\API\ReminderController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -396,5 +398,39 @@ Route::prefix('branches')->group(function () {
     });
     Route::middleware('auth:sanctum')->group(function () {
         Route::middleware('role:admin')->delete("delete/{id}", [BranchController::class, "delete"])->name("delete");
+    });
+});
+
+// Reminder Type Routes
+
+Route::prefix('reminder-types')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->get("fetch", [Reminder_TypeController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->post("create", [Reminder_TypeController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->post("update/{id}", [Reminder_TypeController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->delete("delete/{id}", [Reminder_TypeController::class, "delete"])->name("delete");
+    });
+});
+
+// Reminder Routes
+
+Route::prefix('reminders')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->get("fetch", [ReminderController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->post("create", [ReminderController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->post("update/{id}", [ReminderController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->delete("delete/{id}", [ReminderController::class, "delete"])->name("delete");
     });
 });

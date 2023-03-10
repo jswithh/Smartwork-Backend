@@ -56,7 +56,7 @@ class User extends Authenticatable
         'is_active',
     ];
 
-    
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -70,7 +70,7 @@ class User extends Authenticatable
         'two_factor_secret',
     ];
 
-    
+
 
     /**
      * The attributes that should be cast.
@@ -90,62 +90,75 @@ class User extends Authenticatable
     //     'profile_photo_url',
     // ];
 
-     public function team(){
+    public function team()
+    {
         return $this->belongsTo(Team::class);
     }
 
-   public function department(){
+    public function department()
+    {
         return $this->belongsTo(Department::class);
     }
 
-    public function job_level(){
+    public function job_level()
+    {
         return $this->belongsTo(Job_Level::class);
     }
 
-    public function salary(){
+    public function salary()
+    {
         return $this->hasOne(Salary::class);
     }
 
-    public function employee_type(){
+    public function employee_type()
+    {
         return $this->belongsTo(Employee_Type::class);
     }
 
-    public function contract(){
+    public function contract()
+    {
         return $this->hasOne(Contract::class);
     }
 
-    public function insurance(){
+    public function insurance()
+    {
         return $this->hasOne(Insurance::class);
     }
 
-    public function attendance(){
+    public function attendance()
+    {
         return $this->hasMany(Attendance::class);
     }
-    public function goal(){
+    public function goal()
+    {
         return $this->hasMany(Goal::class);
     }
 
-    public function User_File(){
+    public function User_File()
+    {
         return $this->hasMany(User_File::class);
     }
 
-    public function education(){
+    public function education()
+    {
         return $this->hasMany(Education::class);
     }
 
-    public function education_file(){
+    public function education_file()
+    {
         return $this->hasMany(Education_File::class);
     }
 
-    public function career_experience(){
+    public function career_experience()
+    {
         return $this->hasMany(Career_experience::class);
     }
 
-    public function age(){
-    if (isset($this->attributes['birthday'])) {
-        return Carbon::parse($this->attributes['birthday'])->age;
+    public function age()
+    {
+        if (isset($this->attributes['birthday'])) {
+            return Carbon::parse($this->attributes['birthday'])->age;
+        }
+        return null;
     }
-    return null;
-}
-
 }

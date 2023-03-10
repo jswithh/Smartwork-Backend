@@ -6,25 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Team extends Model
+class Reminder_Type extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'reminder_types';
+
     protected $fillable = [
         'name',
-        'department_id',
-        'icon',
     ];
 
 
-
-    public function user()
-    {
-        return $this->hasMany(User::class);
-    }
-
-    public function department()
-    {
-        return $this->belongsTo(Department::class);
-    }
 }
