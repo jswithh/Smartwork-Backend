@@ -28,6 +28,7 @@ use App\Http\Controllers\API\BranchController;
 use App\Http\Controllers\API\Reminder_TypeController;
 use App\Http\Controllers\API\ReminderController;
 use App\Http\Controllers\API\Knowledge_BaseController;
+use App\Http\Controllers\API\EventController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -450,5 +451,22 @@ Route::prefix('knowledge-bases')->group(function () {
     });
     Route::middleware('auth:sanctum')->group(function () {
         Route::middleware('role:admin')->delete("delete/{id}", [Knowledge_BaseController::class, "delete"])->name("delete");
+    });
+});
+
+// Event Routes
+
+Route::prefix('events')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get("fetch", [EventController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post("create", [EventController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post("update/{id}", [EventController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::delete("delete/{id}", [EventController::class, "delete"])->name("delete");
     });
 });
