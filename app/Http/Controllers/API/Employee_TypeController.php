@@ -4,13 +4,14 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-Use App\Models\Employee_Type;
+use App\Models\Employee_Type;
 use App\Helpers\ResponseFormatter;
 use Vinkla\Hashids\Facades\Hashids;
 
 class Employee_TypeController extends Controller
 {
-    public function create(Request $request){
+    public function create(Request $request)
+    {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'code' => ['required', 'string', 'max:255'],
@@ -21,35 +22,37 @@ class Employee_TypeController extends Controller
             'code' => $request->code,
         ]);
 
-        if($employee_type){
-            return ResponseFormatter::success($employee_type, 'Job Level Created');
+        if ($employee_type) {
+            return ResponseFormatter::success($employee_type, 'Employee Type Created');
         }
 
-        return ResponseFormatter::error(null, 'Job Level Failed to Create');
-}
+        return ResponseFormatter::error(null, 'Employee Type Failed to Create');
+    }
 
-    public function fetch(Request $request){
+    public function fetch(Request $request)
+    {
         $id = $request->input('id');
         $employee_type = Employee_Type::query()->get();
 
-        if($request->has('id')){
+        if ($request->has('id')) {
             $id = Hashids::decode($id);
             $employee_type = Employee_Type::find($id);
 
-            if($employee_type->isNotEmpty()){
-                return ResponseFormatter::success($employee_type, 'Job Level Found');
+            if ($employee_type->isNotEmpty()) {
+                return ResponseFormatter::success($employee_type, 'Employee Type Found');
             }
-            return ResponseFormatter::error('Job Level Not Found',404);
+            return ResponseFormatter::error('Employee Type Not Found', 404);
         }
 
-        return ResponseFormatter::success($employee_type, 'Job Level Fetched');
+        return ResponseFormatter::success($employee_type, 'Employee Type Fetched');
 
-        
 
-        return ResponseFormatter::error(null, 'Job Level Failed to Fetch');
+
+        return ResponseFormatter::error(null, 'Employee Type Failed to Fetch');
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         $request->validate([
             'name' => ['nullable', 'string', 'max:255'],
             'code' => ['nullable', 'string', 'max:255'],
@@ -58,26 +61,27 @@ class Employee_TypeController extends Controller
         $id = Hashids::decode($id)[0];
         $employee_type = Employee_Type::find($id);
 
-        if($employee_type){
-           
+        if ($employee_type) {
+
             $employee_type->update($request->all());
 
-            return ResponseFormatter::success($employee_type, 'Job Level Updated');
+            return ResponseFormatter::success($employee_type, 'Employee Type Updated');
         }
 
-        return ResponseFormatter::error('Job Level Failed to Update',404);
+        return ResponseFormatter::error('Employee Type Failed to Update', 404);
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $id = Hashids::decode($id)[0];
         $employee_type = Employee_Type::find($id);
 
-        if($employee_type){
+        if ($employee_type) {
             $employee_type->delete();
 
-            return ResponseFormatter::success($employee_type, 'Job Level Deleted');
+            return ResponseFormatter::success($employee_type, 'Employee Type Deleted');
         }
 
-        return ResponseFormatter::error(null, 'Job Level Failed to Delete');
+        return ResponseFormatter::error(null, 'Employee Type Failed to Delete');
     }
 }

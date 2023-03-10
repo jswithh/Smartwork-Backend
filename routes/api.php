@@ -27,6 +27,7 @@ use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\BranchController;
 use App\Http\Controllers\API\Reminder_TypeController;
 use App\Http\Controllers\API\ReminderController;
+use App\Http\Controllers\API\Knowledge_BaseController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -432,5 +433,22 @@ Route::prefix('reminders')->group(function () {
     });
     Route::middleware('auth:sanctum')->group(function () {
         Route::delete("delete/{id}", [ReminderController::class, "delete"])->name("delete");
+    });
+});
+
+// knowledge bases Routes
+
+Route::prefix('knowledge-bases')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->get("fetch", [Knowledge_BaseController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->post("create", [Knowledge_BaseController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->post("update/{id}", [Knowledge_BaseController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->delete("delete/{id}", [Knowledge_BaseController::class, "delete"])->name("delete");
     });
 });

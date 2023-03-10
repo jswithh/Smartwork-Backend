@@ -17,7 +17,7 @@
         outcomes.</p>
     <p>If you have any questions or need any assistance, please don't hesitate to contact your manager.</p>
     <p>Thank you,</p>
-    <p>tes</p>
+    <a href="https://sw-apps.hracademy.id/" target="_blank"> </a>
 </body>
 
 </html>
