@@ -19,7 +19,7 @@ class Midyear_EvaluationController extends Controller
     public function create(CreateMidyear_EvaluationRequest $request)
     {
 
-        $midyear_evaluation = Midyear_Evaluation::create($request->all());
+        $midyear_evaluation = Midyear_Evaluation::insert($request->all());
 
 
         if ($midyear_evaluation) {
