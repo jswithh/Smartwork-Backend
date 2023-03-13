@@ -13,6 +13,10 @@ class Knowledge_BaseController extends Controller
     public function create(Request $request)
     {
         $request->validate([
+            'category_knowledge_id' => [
+                'required', 'integer',
+                'exists:category_knowledges,id'
+            ],
             'tittle' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:255'],
             'url' => ['required', 'string', 'max:255'],
@@ -34,7 +38,7 @@ class Knowledge_BaseController extends Controller
         $knowledge_base = Knowledge_Base::query();
 
         if ($request->has('id')) {
-            $id = Hashids::dedescription($id);
+            $id = Hashids::decode($id);
             $knowledge_base = Knowledge_Base::find($id);
 
             if ($knowledge_base->isNotEmpty()) {
@@ -57,12 +61,16 @@ class Knowledge_BaseController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
+            'category_knowledge_id' => [
+                'nullable', 'integer',
+                'exists:category_knowledges,id'
+            ],
             'tittle' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:255'],
             'url' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $id = Hashids::dedescription($id)[0];
+        $id = Hashids::decode($id)[0];
         $knowledge_base = Knowledge_Base::find($id);
 
         if ($knowledge_base) {
@@ -77,7 +85,7 @@ class Knowledge_BaseController extends Controller
 
     public function delete($id)
     {
-        $id = Hashids::dedescription($id)[0];
+        $id = Hashids::decode($id)[0];
         $knowledge_base = Knowledge_Base::find($id);
 
         if ($knowledge_base) {

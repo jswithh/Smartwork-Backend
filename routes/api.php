@@ -29,6 +29,7 @@ use App\Http\Controllers\API\Reminder_TypeController;
 use App\Http\Controllers\API\ReminderController;
 use App\Http\Controllers\API\Knowledge_BaseController;
 use App\Http\Controllers\API\EventController;
+use App\Http\Controllers\API\Category_KnowledgeController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -468,5 +469,22 @@ Route::prefix('events')->group(function () {
     });
     Route::middleware('auth:sanctum')->group(function () {
         Route::delete("delete/{id}", [EventController::class, "delete"])->name("delete");
+    });
+});
+
+// Category Knowledge Routes
+
+Route::prefix('category-knowledges')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->get("fetch", [Category_KnowledgeController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->post("create", [Category_KnowledgeController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->post("update/{id}", [Category_KnowledgeController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('role:admin')->delete("delete/{id}", [Category_KnowledgeController::class, "delete"])->name("delete");
     });
 });

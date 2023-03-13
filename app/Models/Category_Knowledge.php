@@ -6,21 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Knowledge_Base extends Model
+class Category_Knowledge extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'knowledge_bases';
+    protected $table = 'category_knowledges';
 
     protected $fillable = [
-        'category_knowledge_id',
-        'tittle',
+        'name',
         'description',
-        'url',
+        'icon'
     ];
-
-    public function category_knowledge()
-    {
-        return $this->belongsTo(Category_Knowledge::class);
-    }
 }

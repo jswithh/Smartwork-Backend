@@ -200,8 +200,21 @@ class UserController extends Controller
             $id = Hashids::decode($id)[0];
             $users = User::find($id);
 
+            if ($request->file('profile_photo_path')) {
+                $path = url('/') . '/storage/profile_photo_path/' . $request->file('profile_photo_path')->hashName();
+                $request->file('profile_photo_path')->store('public/profile_photo_path');
+                $data['profile_photo_path'] = $path;
+            }
+
+            if (!$request->file('profile_photo_path')) {
+                $data['profile_photo_path'] = 'https://ui-avatars.com/api/?name=' . $data['name'] . '&color=7F9CF5&background=EBF4FF';
+            };
+
+            $data = $request->all();
+
+
             if ($users) {
-                $users->update($request->all());
+                $users->update($data);
             }
 
             return ResponseFormatter::success($users, 'User berhasil diupdate');

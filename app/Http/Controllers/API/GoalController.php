@@ -12,20 +12,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Vinkla\Hashids\Facades\Hashids;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ReminderMail;
+use App\Mail\ManagerMail;
 
 
 class GoalController extends Controller
 {
     public function create(CreateGoalRequest $request)
     {
-        $goal = Goal::create($request->all());
+        $goals = collect($request->validated())->map(function ($goalData) {
+            $goal = Goal::create($goalData);
+            if ($goal) {
+                $user = Auth::user();
+                $manager = User::where('id', $user->manager_id)->first();
+                Mail::to($manager->email)->send(new ManagerMail($goal));
+                return $goal;
+            }
+        })->reject(function ($goal) {
+            return empty($goal);
+        });
 
-        if ($goal) {
-            $user = Auth::user();
-            $manager = User::where('id', $user->manager_id)->first();
-            Mail::to($manager->email)->send(new ReminderMail($goal));
-            return ResponseFormatter::success($goal, 'Goals Created');
+        if ($goals->count() > 0) {
+            return ResponseFormatter::success($goals, 'Goals Created');
         }
 
         return ResponseFormatter::error('Goals Not Created', 404);

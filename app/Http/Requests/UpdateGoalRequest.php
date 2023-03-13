@@ -25,37 +25,43 @@ class UpdateGoalRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id'=>[
+            'user_id' => [
                 'nullable',
                 'integer',
                 'exists:users,id'
             ],
 
-           'strategic_goals'=>[
+            'strategic_goals' => [
                 'nullable',
                 'string',
                 'max:255',
             ],
 
-            'key_performance_indicator'=>[
+            'key_performance_indicator' => [
                 'nullable',
                 'string',
                 'max:255',
             ],
 
-            'weight'=>[
+            'weight' => [
                 'nullable',
                 'string',
                 'max:255',
             ],
 
-            'target'=>[
+            'target' => [
                 'nullable',
                 'string',
                 'max:255',
             ],
 
-            'due_date'=>[
+            'status' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'due_date' => [
                 'nullable',
                 'date',
             ],

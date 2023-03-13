@@ -25,37 +25,43 @@ class CreateGoalRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id'=>[
+            'user_id' => [
                 'required',
                 'integer',
                 'exists:users,id'
             ],
 
-           'strategic_goals'=>[
+            'strategic_goals' => [
                 'required',
                 'string',
                 'max:255',
             ],
 
-            'key_performance_indicator'=>[
+            'key_performance_indicator' => [
                 'required',
                 'string',
                 'max:255',
             ],
 
-            'weight'=>[
+            'weight' => [
                 'required',
                 'string',
                 'max:255',
             ],
 
-            'target'=>[
+            'target' => [
                 'required',
                 'string',
                 'max:255',
             ],
 
-            'due_date'=>[
+            'status' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'due_date' => [
                 'required',
                 'date',
             ],

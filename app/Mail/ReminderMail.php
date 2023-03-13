@@ -52,6 +52,12 @@ class ReminderMail extends Mailable
                 ->with([
                     'data' => $this->data,
                 ]);
+        } else {
+            return $this->subject('Reminder: ' . $this->data->title)
+                ->view('emails.goal_settings')
+                ->with([
+                    'data' => $this->data,
+                ]);
         }
     }
 }
