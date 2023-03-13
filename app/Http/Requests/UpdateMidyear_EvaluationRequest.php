@@ -41,10 +41,13 @@ class UpdateMidyear_EvaluationRequest extends FormRequest
                 'string',
                 'max:255',
             ],
+            'midyear_employee_comment' => [
+                'nullable',
+                'string',
+            ],
             'midyear_manager_comment' => [
                 'nullable',
                 'string',
-                'max:255',
             ],
         ];
     }

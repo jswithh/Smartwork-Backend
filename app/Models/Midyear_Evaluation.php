@@ -16,14 +16,17 @@ class Midyear_Evaluation extends Model
         'user_id',
         'goal_id',
         'midyear_realization',
+        'midyear_employee_comment',
         'midyear_manager_comment',
     ];
 
-    public function goal(){
+    public function goal()
+    {
         return $this->belongsTo(Goal::class);
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }

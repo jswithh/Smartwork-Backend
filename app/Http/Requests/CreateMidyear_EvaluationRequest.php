@@ -25,26 +25,29 @@ class CreateMidyear_EvaluationRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id'=>[
+            'user_id' => [
                 'required',
                 'integer',
                 'exists:users,id'
             ],
 
-           'goal_id'=>[
+            'goal_id' => [
                 'required',
                 'integer',
                 'exists:goals,id'
             ],
-            'midyear_realization'=>[
+            'midyear_realization' => [
                 'required',
                 'string',
                 'max:255',
             ],
-            'midyear_manager_comment'=>[
+            'midyear_employee_comment' => [
                 'required',
                 'string',
-                'max:255',
+            ],
+            'midyear_manager_comment' => [
+                'required',
+                'string',
             ],
         ];
     }
