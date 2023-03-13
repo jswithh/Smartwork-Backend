@@ -30,6 +30,7 @@ use App\Http\Controllers\API\ReminderController;
 use App\Http\Controllers\API\Knowledge_BaseController;
 use App\Http\Controllers\API\EventController;
 use App\Http\Controllers\API\Category_KnowledgeController;
+use App\Http\Controllers\API\BehaviorController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -487,5 +488,22 @@ Route::prefix('category-knowledges')->group(function () {
     });
     Route::middleware('auth:sanctum')->group(function () {
         Route::middleware('role:admin')->delete("delete/{id}", [Category_KnowledgeController::class, "delete"])->name("delete");
+    });
+});
+
+// Behavior Routes
+
+Route::prefix('behaviors')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get("fetch", [BehaviorController::class, "fetch"])->name("fetch");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post("create", [BehaviorController::class, "create"])->name("create");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post("update/{id}", [BehaviorController::class, "update"])->name("update");
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::delete("delete/{id}", [BehaviorController::class, "delete"])->name("delete");
     });
 });
