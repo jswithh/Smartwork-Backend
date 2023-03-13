@@ -210,7 +210,7 @@ Route::prefix('goals')->group(function () {
         Route::middleware('permission:create goals')->post("create", [GoalController::class, "create"])->name("create");
     });
     Route::middleware('auth:sanctum')->group(function () {
-        Route::middleware('permission:update goals')->post("update/{id}", [GoalController::class, "update"])->name("update");
+        Route::middleware('permission:update goals')->post("update/{user_id}", [GoalController::class, "update"])->name("update");
     });
     Route::middleware('auth:sanctum')->group(function () {
         Route::middleware('permission:delete goals')->delete("delete/{id}", [GoalController::class, "delete"])->name("delete");

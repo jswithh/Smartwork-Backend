@@ -20,8 +20,6 @@ class GoalController extends Controller
     public function create(CreateGoalRequest $request)
     {
         $data = $request->all();
-        $data['created_at'] = date('Y-m-d H:i:s');
-        $data['updated_at'] = date('Y-m-d H:i:s');
 
         $goal = Goal::insert($data);
 
@@ -70,37 +68,43 @@ class GoalController extends Controller
         return ResponseFormatter::success($goalQuery->paginate($limit), 'Goals Found');
     }
 
-    public function update(UpdateGoalRequest $request, $id)
+    public function update(UpdateGoalRequest $request, $user_id)
     {
-
-        $id = Hashids::decode($id)[0];
-        $goal = Goal::find($id);
+        $user_id = Hashids::decode($user_id)[0];
+        $goals = Goal::where('user_id', $user_id)
+            ->whereYear('created_at', date('Y'))
+            ->where('status', '!=', 'approved')
+            ->get();
 
         $data = $request->all();
 
-        if ($goal) {
+        foreach ($goals as $goal) {
             $goal->update($data);
-            if ($goal->status == 'send_back') {
-                $employee = User::where('id', $goal->user_id)->first();
-
-                Mail::to($employee->email)->send(new ManagerMail($goal));
-            }
-
-            if ($goal->status == 'approved') {
-                $user = Auth::user();
-                $manager = User::where('id', $user->manager_id)->first();
-                $employee = User::where('id', $goal->user_id)->first();
-
-                Mail::to($employee->email)->send(new ManagerMail($goal));
-                Mail::to($manager->email)->send(new ManagerMail($goal));
-            }
-
-            return ResponseFormatter::success($goal, 'Goals Updated');
+        }
+        if ($goal->status == 'send_back') {
+            $employee = User::where('id', $goal->user_id)->first();
+            Mail::to($employee->email)->send(new ManagerMail($goal));
         }
 
-        return ResponseFormatter::error(null, 'Goals Failed to Update');
-    }
+        if ($goal->status == 'approved') {
+            $user = Auth::user();
+            $manager = User::where('id', $user->manager_id)->first();
+            $employee = User::where('id', $goal->user_id)->first();
 
+            if (!empty($manager)) {
+                Mail::to($manager->email)->send(new ManagerMail($goal));
+                Mail::to($employee->email)->send(new ManagerMail($goal));
+            } else {
+
+                Mail::to($employee->email)->send(new ManagerMail($goal));
+            }
+        }
+
+        if ($goals) {
+            return ResponseFormatter::success($goals, 'Goals Updated');
+        }
+        return ResponseFormatter::error('Goals Failed to Update', 404);
+    }
     public function delete($id)
     {
         $id = Hashids::decode($id)[0];
