@@ -31,6 +31,8 @@ class ReminderController extends Controller
     public function fetch(Request $request)
     {
         $id = $request->input('id');
+        $assignedTo = $request->input('assigned_to');
+        $createdBy = $request->input('created_by');
         $limit = $request->input('limit', 10);
 
         // get multiple data
@@ -47,6 +49,27 @@ class ReminderController extends Controller
             }
             return ResponseFormatter::error('Reminder Not Found', 404);
         }
+
+        if ($request->has('assigned_to')) {
+            $assignedTo = Hashids::decode($assignedTo);
+            $reminder = $reminderQuery->where('assigned_to', $assignedTo);
+
+            if ($reminder->isNotEmpty()) {
+                return ResponseFormatter::success($reminder, 'Reminder Found');
+            }
+            return ResponseFormatter::error('Reminder Not Found', 404);
+        }
+
+        if ($request->has('created_by')) {
+            $createdBy = Hashids::decode($createdBy);
+            $reminder = $reminderQuery->where('created_by', $createdBy)->get();
+
+            if ($reminder->isNotEmpty()) {
+                return ResponseFormatter::success($reminder, 'Reminder Found');
+            }
+            return ResponseFormatter::error('Reminder Not Found', 404);
+        }
+
         $reminder = $reminderQuery->paginate($limit);
         if ($reminder->isNotEmpty()) {
             return ResponseFormatter::success($reminder, 'Reminder Found');
