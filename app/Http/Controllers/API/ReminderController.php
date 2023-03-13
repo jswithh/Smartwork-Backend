@@ -52,7 +52,7 @@ class ReminderController extends Controller
 
         if ($request->has('assigned_to')) {
             $assignedTo = Hashids::decode($assignedTo);
-            $reminder = $reminderQuery->where('assigned_to', $assignedTo);
+            $reminder = $reminderQuery->where('assigned_to', $assignedTo)->get();
 
             if ($reminder->isNotEmpty()) {
                 return ResponseFormatter::success($reminder, 'Reminder Found');
