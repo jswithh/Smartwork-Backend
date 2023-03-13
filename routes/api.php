@@ -54,6 +54,7 @@ Route::prefix('users')->group(function () {
         Route::get('fetch', [UserController::class, 'fetch']);
         Route::middleware('role:admin')->post('assignRole/{id}', [UserController::class, 'assignRole']);
         Route::middleware('role:admin')->post('updateUserRole/{id}', [UserController::class, 'updateUserRole']);
+        Route::get('getUserByownDepartment', [UserController::class, 'getUserByownDepartment']);
     });
 });
 

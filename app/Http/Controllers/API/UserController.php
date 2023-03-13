@@ -14,6 +14,7 @@ use Vinkla\Hashids\Facades\Hashids;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WelcomeMail;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -236,5 +237,14 @@ class UserController extends Controller
         $permission = explode(',', $request->input('permission'));
         $users->syncPermissions($permission);
         return ResponseFormatter::success($users, 'Role berhasil diupdate');
+    }
+
+    public function getUserByownDepartment()
+    {
+        $user = User::where('department_id', Auth::user()->department_id)->get();
+        if ($user->isNotEmpty()) {
+            return ResponseFormatter::success($user, 'Data user berhasil diambil');
+        }
+        return ResponseFormatter::error('User not found', 404);
     }
 }
