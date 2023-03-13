@@ -425,7 +425,7 @@ Route::prefix('reminder-types')->group(function () {
 
 Route::prefix('reminders')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
-        Route::middleware('role:admin')->get("fetch", [ReminderController::class, "fetch"])->name("fetch");
+        Route::get("fetch", [ReminderController::class, "fetch"])->name("fetch");
     });
     Route::middleware('auth:sanctum')->group(function () {
         Route::post("create", [ReminderController::class, "create"])->name("create");
