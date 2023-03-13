@@ -37,7 +37,7 @@ class CreateFinal_EvaluationRequest extends FormRequest
             ],
 
             'midyear_id.*' => [
-                'required',
+                'nullable',
                 'integer',
                 'exists:midyear_evaluations,id'
             ],
