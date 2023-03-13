@@ -19,23 +19,18 @@ class GoalController extends Controller
 {
     public function create(CreateGoalRequest $request)
     {
-        $goals = collect($request->validated())->map(function ($goalData) {
-            $goal = Goal::create($goalData);
-            if ($goal) {
-                $user = Auth::user();
-                $manager = User::where('id', $user->manager_id)->first();
-                Mail::to($manager->email)->send(new ManagerMail($goal));
-                return $goal;
-            }
-        })->reject(function ($goal) {
-            return empty($goal);
-        });
+        $data = $request->all();
 
-        if ($goals->count() > 0) {
-            return ResponseFormatter::success($goals, 'Goals Created');
+        $goal = Goal::insert($data);
+
+        if ($goal) {
+            $user = Auth::user();
+            $manager = User::where('id', $user->manager_id)->first();
+
+            Mail::to($manager->email)->send(new ManagerMail($user, $manager));
+            return ResponseFormatter::success($data, 'Goals Created');
         }
-
-        return ResponseFormatter::error('Goals Not Created', 404);
+        return ResponseFormatter::error('Goals Failed to Create', 404);
     }
 
     public function fetch(Request $request)
