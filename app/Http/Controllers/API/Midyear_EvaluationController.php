@@ -39,7 +39,7 @@ class Midyear_EvaluationController extends Controller
         $limit = $request->input('limit', 10);
 
         // get multiple data
-        $midyear_evaluationQuery = Midyear_Evaluation::query()->with('goal');
+        $midyear_evaluationQuery = Midyear_Evaluation::query()->with(['user', 'Midyear_Evaluation']);
 
         // get single data
 
@@ -71,21 +71,42 @@ class Midyear_EvaluationController extends Controller
         return ResponseFormatter::error('Midyear_Evaluations Not Found', 404);
     }
 
-    public function update(UpdateMidyear_EvaluationRequest $request, $id)
+    public function update(UpdateMidyear_EvaluationRequest $request, $user_id)
     {
+        $user_id = Hashids::decode($user_id)[0];
+        $Midyear_Evaluations = Midyear_Evaluation::where('user_id', $user_id)
+            ->whereYear('created_at', date('Y'))
+            ->where('status', '!=', 'approved')
+            ->get();
 
-        $id = Hashids::decode($id)[0];
-        $midyear_evaluation = Midyear_Evaluation::find($id);
+        $data = $request->all();
 
-        if ($midyear_evaluation) {
-            $midyear_evaluation->update(
-                $request->all()
-            );
-
-            return ResponseFormatter::success($midyear_evaluation, 'Midyear_Evaluations Updated');
+        foreach ($Midyear_Evaluations as $Midyear_Evaluation) {
+            $Midyear_Evaluation->update($data);
+        }
+        if ($Midyear_Evaluation->status == 'send_back') {
+            $employee = User::where('id', $Midyear_Evaluation->user_id)->first();
+            Mail::to($employee->email)->send(new ManagerMail($Midyear_Evaluation));
         }
 
-        return ResponseFormatter::error(null, 'Midyear_Evaluations Failed to Update');
+        if ($Midyear_Evaluation->status == 'approved') {
+            $user = Auth::user();
+            $manager = User::where('id', $user->manager_id)->first();
+            $employee = User::where('id', $Midyear_Evaluation->user_id)->first();
+
+            if (!empty($manager)) {
+                Mail::to($manager->email)->send(new ManagerMail($Midyear_Evaluation));
+                Mail::to($employee->email)->send(new ManagerMail($Midyear_Evaluation));
+            } else {
+
+                Mail::to($employee->email)->send(new ManagerMail($Midyear_Evaluation));
+            }
+        }
+
+        if ($Midyear_Evaluations) {
+            return ResponseFormatter::success($Midyear_Evaluations, 'Midyear_Evaluations Updated');
+        }
+        return ResponseFormatter::error('Midyear_Evaluations Failed to Update', 404);
     }
 
     public function delete($id)
