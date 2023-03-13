@@ -279,7 +279,7 @@ Route::prefix('midyear_evaluations')->group(function () {
         Route::middleware('permission:create midyear evaluation')->post("create", [Midyear_EvaluationController::class, "create"])->name("create");
     });
     Route::middleware('auth:sanctum')->group(function () {
-        Route::middleware('permission:update midyear evaluation')->post("update/{id}", [Midyear_EvaluationController::class, "update"])->name("update");
+        Route::middleware('permission:update midyear evaluation')->post("update/{user_id}", [Midyear_EvaluationController::class, "update"])->name("update");
     });
     Route::middleware('auth:sanctum')->group(function () {
         Route::middleware('permission:delete midyear evaluation')->delete("delete/{id}", [Midyear_EvaluationController::class, "delete"])->name("delete");
