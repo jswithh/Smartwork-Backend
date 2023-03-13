@@ -41,7 +41,7 @@ class GoalController extends Controller
 
         // get multiple data with year now
 
-        $goalQuery = Goal::query()->with(['user', 'midyear_evaluation'])->whereYear('created_at', date('Y'));
+        $goalQuery = Goal::query()->with(['user', 'midyear_evaluation', 'final_evaluation'])->whereYear('created_at', date('Y'));
 
         // get single data
 
