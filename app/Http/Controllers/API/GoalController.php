@@ -20,6 +20,8 @@ class GoalController extends Controller
     public function create(CreateGoalRequest $request)
     {
         $data = $request->all();
+        $data['created_at'] = date('Y-m-d H:i:s');
+        $data['updated_at'] = date('Y-m-d H:i:s');
 
         $goal = Goal::insert($data);
 
@@ -39,8 +41,9 @@ class GoalController extends Controller
         $user_id = $request->input('user_id');
         $limit = $request->input('limit', 10);
 
-        // get multiple data
-        $goalQuery = Goal::query()->with('user');
+        // get multiple data with year now
+
+        $goalQuery = Goal::query()->with('user')->whereYear('created_at', date('Y'));
 
         // get single data
 
@@ -73,10 +76,24 @@ class GoalController extends Controller
         $id = Hashids::decode($id)[0];
         $goal = Goal::find($id);
 
+        $data = $request->all();
+
         if ($goal) {
-            $goal->update(
-                $request->all()
-            );
+            $goal->update($data);
+            if ($goal->status == 'send_back') {
+                $employee = User::where('id', $goal->user_id)->first();
+
+                Mail::to($employee->email)->send(new ManagerMail($goal));
+            }
+
+            if ($goal->status == 'approved') {
+                $user = Auth::user();
+                $manager = User::where('id', $user->manager_id)->first();
+                $employee = User::where('id', $goal->user_id)->first();
+
+                Mail::to($employee->email)->send(new ManagerMail($goal));
+                Mail::to($manager->email)->send(new ManagerMail($goal));
+            }
 
             return ResponseFormatter::success($goal, 'Goals Updated');
         }
