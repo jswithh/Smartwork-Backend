@@ -25,72 +25,72 @@ class UpdateFinal_EvaluationRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id'=>[
+            'user_id.*' => [
                 'nullable',
                 'integer',
                 'exists:users,id'
             ],
-            'goal_id'=>[
+            'goal_id.*' => [
                 'nullable',
                 'integer',
                 'exists:goals,id'
             ],
 
-            'midyear_id'=>[
+            'midyear_id.*' => [
                 'nullable',
                 'integer',
                 'exists:midyear_evaluations,id'
             ],
 
-            'final_realization'=>[
+            'final_realization.*' => [
                 'nullable',
                 'string',
                 'max:255',
             ],
 
-            'final_goal_status'=>[
+            'final_goal_status.*' => [
                 'nullable',
                 'string',
                 'max:255',
             ],
 
-            'final_employee_score'=>[
+            'final_employee_score.*' => [
                 'nullable',
                 'string',
                 'max:255',
             ],
 
-            'final_manager_score'=>[
+            'final_manager_score.*' => [
                 'nullable',
                 'string',
                 'max:255',
             ],
 
-            'final_employee_behavior'=>[
+            'final_employee_behavior.*' => [
                 'nullable',
                 'string',
                 'max:255',
             ],
 
-            'final_manager_behavior'=>[
+            'final_manager_behavior.*' => [
                 'nullable',
                 'string',
                 'max:255',
             ],
 
-            'final_manager_comment'=>[
+            'final_manager_comment.*' => [
                 'nullable',
                 'string',
                 'max:255',
             ],
 
-            'final_employee_comment'=>[
+            'final_employee_comment.*' => [
                 'nullable',
                 'string',
                 'max:255',
             ],
 
-            
+
         ];
     }
 }

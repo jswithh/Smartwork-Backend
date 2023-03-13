@@ -25,72 +25,70 @@ class CreateFinal_EvaluationRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id'=>[
+            'user_id.*' => [
                 'required',
                 'integer',
                 'exists:users,id'
             ],
-            'goal_id'=>[
+            'goal_id.*' => [
                 'required',
                 'integer',
                 'exists:goals,id'
             ],
 
-            'midyear_id'=>[
+            'midyear_id.*' => [
                 'required',
                 'integer',
                 'exists:midyear_evaluations,id'
             ],
 
-            'final_realization'=>[
+            'final_realization.*' => [
                 'required',
                 'string',
                 'max:255',
             ],
 
-            'final_goal_status'=>[
+            'final_goal_status.*' => [
                 'required',
                 'string',
                 'max:255',
             ],
 
-            'final_employee_score'=>[
+            'final_employee_score.*' => [
                 'required',
                 'string',
                 'max:255',
             ],
 
-            'final_manager_score'=>[
+            'final_manager_score.*' => [
                 'required',
                 'string',
                 'max:255',
             ],
 
-            'final_employee_behavior'=>[
+            'final_employee_behavior.*' => [
                 'required',
                 'string',
                 'max:255',
             ],
 
-            'final_manager_behavior'=>[
+            'final_manager_behavior.*' => [
                 'required',
                 'string',
                 'max:255',
             ],
 
-            'final_manager_comment'=>[
+            'final_manager_comment.*' => [
                 'required',
                 'string',
-                'max:255',
             ],
 
-            'final_employee_comment'=>[
+            'final_employee_comment.*' => [
                 'required',
                 'string',
-                'max:255',
             ],
 
-            
+
         ];
     }
 }
