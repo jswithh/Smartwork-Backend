@@ -61,7 +61,7 @@ class CreateFinal_EvaluationRequest extends FormRequest
             ],
 
             'final_manager_score.*' => [
-                'required',
+                'nullable',
                 'string',
                 'max:255',
             ],
@@ -73,13 +73,13 @@ class CreateFinal_EvaluationRequest extends FormRequest
             ],
 
             'final_manager_behavior.*' => [
-                'required',
+                'nullable',
                 'string',
                 'max:255',
             ],
 
             'final_manager_comment.*' => [
-                'required',
+                'nullable',
                 'string',
             ],
 
