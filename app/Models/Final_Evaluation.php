@@ -24,6 +24,7 @@ class Final_Evaluation extends Model
         'final_manager_behavior',
         'final_manager_comment',
         'final_employee_comment',
+        'status'
     ];
 
     public function user()

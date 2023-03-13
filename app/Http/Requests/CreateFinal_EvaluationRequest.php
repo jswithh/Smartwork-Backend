@@ -88,6 +88,12 @@ class CreateFinal_EvaluationRequest extends FormRequest
                 'string',
             ],
 
+            'status.*' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
 
         ];
     }

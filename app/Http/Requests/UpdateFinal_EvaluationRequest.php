@@ -90,6 +90,12 @@ class UpdateFinal_EvaluationRequest extends FormRequest
                 'max:255',
             ],
 
+            'status.*' => [
+                'nullable',
+                'string',
+
+            ],
+
 
         ];
     }
