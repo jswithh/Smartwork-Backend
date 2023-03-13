@@ -25,27 +25,27 @@ class UpdateMidyear_EvaluationRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => [
+            'user_id.*' => [
                 'nullable',
                 'integer',
                 'exists:users,id'
             ],
 
-            'goal_id' => [
+            'goal_id.*' => [
                 'nullable',
                 'integer',
                 'exists:goals,id'
             ],
-            'midyear_realization' => [
+            'midyear_realization.*' => [
                 'nullable',
                 'string',
                 'max:255',
             ],
-            'midyear_employee_comment' => [
+            'midyear_employee_comment.*' => [
                 'nullable',
                 'string',
             ],
-            'midyear_manager_comment' => [
+            'midyear_manager_comment.*' => [
                 'nullable',
                 'string',
             ],
