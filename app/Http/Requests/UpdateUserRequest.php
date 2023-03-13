@@ -44,7 +44,7 @@ class UpdateUserRequest extends FormRequest
             'number_of_identity' => 'nullable|integer',
             'place_of_identity' => 'nullable|string',
             'branch' => 'nullable|string',
-            'department_id' => 'nullable|integer|exists:roles,id',
+            'department_id' => 'nullable|integer|exists:department,id',
             'team_id' => 'nullable|integer|exists:teams,id',
             'job_level' => 'nullable|string',
             'employee_type' => 'nullable|string',
