@@ -25,4 +25,14 @@ class Goal extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function midyear_evaluation()
+    {
+        return $this->hasOne(Midyear_Evaluation::class);
+    }
+
+    public function final_evaluation()
+    {
+        return $this->hasOne(Final_Evaluation::class);
+    }
 }
