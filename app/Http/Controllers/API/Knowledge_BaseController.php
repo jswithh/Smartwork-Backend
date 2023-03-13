@@ -30,7 +30,8 @@ class Knowledge_BaseController extends Controller
     public function fetch(Request $request)
     {
         $id = $request->input('id');
-        $knowledge_base = Knowledge_Base::query()->get();
+        $limit = $request->input('limit', 10);
+        $knowledge_base = Knowledge_Base::query();
 
         if ($request->has('id')) {
             $id = Hashids::dedescription($id);
@@ -41,6 +42,8 @@ class Knowledge_BaseController extends Controller
             }
             return ResponseFormatter::error('Knowledge Base Not Found', 404);
         }
+
+        $knowledge_base = $knowledge_base->paginate($limit);
 
         if ($knowledge_base->isNotEmpty())
             return ResponseFormatter::success(
