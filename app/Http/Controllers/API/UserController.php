@@ -196,31 +196,23 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, $id)
     {
-        try {
-            $id = Hashids::decode($id)[0];
-            $users = User::find($id);
 
-            if ($request->file('profile_photo_path')) {
-                $path = url('/') . '/storage/profile_photo_path/' . $request->file('profile_photo_path')->hashName();
-                $request->file('profile_photo_path')->store('public/profile_photo_path');
-                $data['profile_photo_path'] = $path;
-            }
+        $id = Hashids::decode($id)[0];
+        $users = User::find($id);
 
-            if (!$request->file('profile_photo_path')) {
-                $data['profile_photo_path'] = 'https://ui-avatars.com/api/?name=' . $data['name'] . '&color=7F9CF5&background=EBF4FF';
-            };
-
-            $data = $request->all();
-
-
-            if ($users) {
-                $users->update($data);
-            }
-
-            return ResponseFormatter::success($users, 'User berhasil diupdate');
-        } catch (\Throwable $th) {
-            return ResponseFormatter::error($th->getMessage(), 500);
+        $data = $request->all();
+        if ($request->file('profile_photo_path')) {
+            $path = url('/') . '/storage/profile_photo_path/' . $request->file('profile_photo_path')->hashName();
+            $request->file('profile_photo_path')->store('public/profile_photo_path');
+            $data['profile_photo_path'] = $path;
         }
+
+        if ($users) {
+            $users->update($data);
+            return ResponseFormatter::success($users, 'User berhasil diupdate');
+        }
+
+        return ResponseFormatter::error('User not found', 404);
     }
 
 
