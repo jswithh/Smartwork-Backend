@@ -25,6 +25,7 @@ class UpdateUserRequest extends FormRequest
     public function rules()
     {
         return [
+            'manager_id' => 'nullable|integer|exists:users,id',
             'name' => 'nullable|string|max:255',
             'email' => 'nullable|string|email|max:255|unique:users,email,',
             'password' => 'nullable|string|confirmed',
@@ -35,7 +36,7 @@ class UpdateUserRequest extends FormRequest
             'birthday' => 'nullable|date',
             'birthplace' => 'nullable|string',
             'religion' => 'nullable|string',
-            'marital_status'=> 'nullable|string',
+            'marital_status' => 'nullable|string',
             'dependent' => 'nullable|integer',
             'nationality' => 'nullable|string',
             'education' => 'nullable|string',

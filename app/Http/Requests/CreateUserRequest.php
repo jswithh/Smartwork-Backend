@@ -15,7 +15,7 @@ class CreateUserRequest extends FormRequest
      */
     public function authorize()
     {
-       return Auth::check();
+        return Auth::check();
     }
 
     /**
@@ -26,30 +26,31 @@ class CreateUserRequest extends FormRequest
     public function rules()
     {
         return [
+            'manager_id' => ['nullable', 'integer', 'exists:users,id'],
             'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => ['nullable', 'string', new Password],
-                'hrcode' => ['nullable', 'string', 'unique:users' ],
-                'gender' => 'nullable|string|in:MALE,FEMALE',
-                'addres' => ['nullable', 'string' ],
-                'phone' => ['nullable', 'string' ],
-                'birthday' => ['nullable', 'dateTime' ],
-                'birthplace' => ['nullable', 'string' ],
-                'religion' => ['nullable', 'string' ],
-                'nationality' => ['nullable', 'string' ],
-                'marital_status' => ['nullable', 'string' ],
-                'dependent' => ['nullable', 'string' ],
-                'education' => ['nullable', 'string' ],
-                'name_of_school' => ['nullable', 'string' ],
-                'number_of_identity' => ['nullable', 'integer' ],
-                'place_of_identity' => ['nullable', 'string' ],
-                'branch' => ['nullable', 'string' ],
-                'department_id' => ['required', 'integer' ],
-                'team_id' => ['required', 'integer' ],
-                'job_level' => ['nullable', 'string' ],
-                'employee_type' => ['nullable', 'string' ],
-                'profile_photo_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'is_active' => ['nullable', 'boolean' ],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['nullable', 'string', new Password],
+            'hrcode' => ['nullable', 'string', 'unique:users'],
+            'gender' => 'nullable|string|in:MALE,FEMALE',
+            'addres' => ['nullable', 'string'],
+            'phone' => ['nullable', 'string'],
+            'birthday' => ['nullable', 'dateTime'],
+            'birthplace' => ['nullable', 'string'],
+            'religion' => ['nullable', 'string'],
+            'nationality' => ['nullable', 'string'],
+            'marital_status' => ['nullable', 'string'],
+            'dependent' => ['nullable', 'string'],
+            'education' => ['nullable', 'string'],
+            'name_of_school' => ['nullable', 'string'],
+            'number_of_identity' => ['nullable', 'integer'],
+            'place_of_identity' => ['nullable', 'string'],
+            'branch' => ['nullable', 'string'],
+            'department_id' => ['required', 'integer'],
+            'team_id' => ['required', 'integer'],
+            'job_level' => ['nullable', 'string'],
+            'employee_type' => ['nullable', 'string'],
+            'profile_photo_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'is_active' => ['nullable', 'boolean'],
 
         ];
     }

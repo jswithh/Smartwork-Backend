@@ -3,28 +3,36 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-Use App\Models\Goal;
+use App\Models\Goal;
 use App\Helpers\ResponseFormatter;
 use App\Http\Requests\CreateGoalRequest;
 use App\Http\Requests\UpdateGoalRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Vinkla\Hashids\Facades\Hashids;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ReminderMail;
+
 
 class GoalController extends Controller
 {
-    public function create(CreateGoalRequest $request){
-
+    public function create(CreateGoalRequest $request)
+    {
         $goal = Goal::create($request->all());
-       
 
-        if($goal){
+        if ($goal) {
+            $user = Auth::user();
+            $manager = User::where('id', $user->manager_id)->first();
+            Mail::to($manager->email)->send(new ReminderMail($goal));
             return ResponseFormatter::success($goal, 'Goals Created');
         }
 
-        return ResponseFormatter::error(null, 'Goals Failed to Create');
-}
+        return ResponseFormatter::error('Goals Not Created', 404);
+    }
 
-    public function fetch(Request $request){
+    public function fetch(Request $request)
+    {
         $id = $request->input('id');
         $user_id = $request->input('user_id');
         $limit = $request->input('limit', 10);
@@ -34,38 +42,38 @@ class GoalController extends Controller
 
         // get single data
 
-        if($request->has('id')){
+        if ($request->has('id')) {
             $id = Hashids::decode($id);
             $goal = $goalQuery->where('id', $id)->get();
 
-            if($goal->isNotEmpty()){
+            if ($goal->isNotEmpty()) {
                 return ResponseFormatter::success($goal, 'Goals Found');
             }
-            return ResponseFormatter::error('Goals Not Found',404);
+            return ResponseFormatter::error('Goals Not Found', 404);
         }
 
-        if($request->has('user_id')){
+        if ($request->has('user_id')) {
             $user_id = Hashids::decode($user_id);
             $goal = $goalQuery->where('user_id', $user_id)->get();
 
-            if($goal->isNotEmpty()){
+            if ($goal->isNotEmpty()) {
                 return ResponseFormatter::success($goal, 'Goals Found');
             }
-            return ResponseFormatter::error('Goals Not Found',404);
+            return ResponseFormatter::error('Goals Not Found', 404);
         }
 
         return ResponseFormatter::success($goalQuery->paginate($limit), 'Goals Found');
-
-        
     }
 
-    public function update(UpdateGoalRequest $request, $id){
-       
+    public function update(UpdateGoalRequest $request, $id)
+    {
+
         $id = Hashids::decode($id)[0];
         $goal = Goal::find($id);
 
-        if($goal){
-            $goal->update($request->all()
+        if ($goal) {
+            $goal->update(
+                $request->all()
             );
 
             return ResponseFormatter::success($goal, 'Goals Updated');
@@ -74,11 +82,12 @@ class GoalController extends Controller
         return ResponseFormatter::error(null, 'Goals Failed to Update');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $id = Hashids::decode($id)[0];
         $goal = Goal::find($id);
 
-        if($goal){
+        if ($goal) {
             $goal->delete();
 
             return ResponseFormatter::success($goal, 'Goals Deleted');

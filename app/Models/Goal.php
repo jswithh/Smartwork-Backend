@@ -16,14 +16,12 @@ class Goal extends Model
         'key_performance_indicator',
         'weight',
         'target',
+        'status',
         'due_date',
     ];
 
-   public function user()
-   {
-       return $this->belongsTo(User::class);
-   }
-
-
-    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
