@@ -31,7 +31,7 @@ class CreateReminderRequest extends FormRequest
             'subject' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'date_added' => 'required|date',
-            'time' => 'required|date_format:H:i',
+            'time' => 'nullable|date_format:H:i',
             'adress' => 'nullable|string|max:255',
             'url' => 'nullable|string|max:255',
             'start_period' => 'required|date',
