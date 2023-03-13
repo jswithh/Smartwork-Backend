@@ -39,7 +39,7 @@ class Midyear_EvaluationController extends Controller
         $limit = $request->input('limit', 10);
 
         // get multiple data
-        $midyear_evaluationQuery = Midyear_Evaluation::query()->with(['user', 'Midyear_Evaluation']);
+        $midyear_evaluationQuery = Midyear_Evaluation::query()->with('user');
 
         // get single data
 
