@@ -201,6 +201,7 @@ class UserController extends Controller
         $users = User::find($id);
 
         $data = $request->all();
+        $data['password'] = Hash::make($request->password);
         if ($request->file('profile_photo_path')) {
             $path = url('/') . '/storage/profile_photo_path/' . $request->file('profile_photo_path')->hashName();
             $request->file('profile_photo_path')->store('public/profile_photo_path');
